@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-controller-manager
+    control-plane: controller-manager
+  name: gems-selfsigned-issuer
+  namespace: gemcloud-system
+spec:
+  selfSigned: {}

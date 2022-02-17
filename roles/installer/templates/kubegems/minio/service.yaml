@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-minio
+  name: gems-minio
+  namespace: gemcloud-system
+spec:
+  ports:
+    - name: minio
+      port: 9000
+      protocol: TCP
+      targetPort: minio
+  selector:
+    app.kubernetes.io/name: gems-minio
+  sessionAffinity: None
+  type: ClusterIP

@@ -1,0 +1,25 @@
+#jinja2:lstrip_blocks: True
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-gateway
+  namespace: gemcloud-logging-system
+  labels:
+    app.kubernetes.io/name: loki-system
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-3100
+      port: 3100
+      protocol: TCP
+      targetPort: 3100
+    - name: grpc-9095
+      port: 9095
+      protocol: TCP
+      targetPort: 9095
+    - name: tcp-7946
+      port: 7946
+      protocol: TCP
+      targetPort: 7946
+  selector:
+    app.kubernetes.io/name: loki-system

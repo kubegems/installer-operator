@@ -1,0 +1,160 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.5.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: gems-controller-manager
+    control-plane: controller-manager
+  name: environments.kubegems.io
+spec:
+  group: kubegems.io
+  names:
+    kind: Environment
+    listKind: EnvironmentList
+    plural: environments
+    shortNames:
+    - tenv
+    singular: environment
+  preserveUnknownFields: false
+  scope: Cluster
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: Environment is the Schema for the environments API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: EnvironmentSpec defines the desired state of Environment
+            properties:
+              deletePolicy:
+                description: "DeletePolicy  \u5220\u9664\u7B56\u7565,\u9009\u9879\u4E3A\
+                  \ delNamespace,delLabels"
+                type: string
+              limitRange:
+                description: "LimitRange  \u9ED8\u8BA4limitrange"
+                items:
+                  description: LimitRangeItem defines a min/max usage limit for any
+                    resource that matches on kind.
+                  properties:
+                    default:
+                      additionalProperties:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      description: Default resource requirement limit value by resource
+                        name if resource limit is omitted.
+                      type: object
+                    defaultRequest:
+                      additionalProperties:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      description: DefaultRequest is the default resource requirement
+                        request value by resource name if resource request is omitted.
+                      type: object
+                    max:
+                      additionalProperties:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      description: Max usage constraints on this kind by resource
+                        name.
+                      type: object
+                    maxLimitRequestRatio:
+                      additionalProperties:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      description: MaxLimitRequestRatio if specified, the named resource
+                        must have a request and limit that are both non-zero where
+                        limit divided by request is less than or equal to the enumerated
+                        value; this represents the max burst for the named resource.
+                      type: object
+                    min:
+                      additionalProperties:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      description: Min usage constraints on this kind by resource
+                        name.
+                      type: object
+                    type:
+                      description: Type of resource that this limit applies to.
+                      type: string
+                  required:
+                  - type
+                  type: object
+                type: array
+              limitRangeName:
+                description: LimitRageName
+                type: string
+              namespace:
+                description: "Namespace \u5173\u8054\u7684ns"
+                type: string
+              project:
+                description: "Project \u9879\u76EE"
+                type: string
+              resourceQuota:
+                additionalProperties:
+                  anyOf:
+                  - type: integer
+                  - type: string
+                  pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                  x-kubernetes-int-or-string: true
+                description: "ResourceQuota  \u8D44\u6E90\u9650\u5236"
+                type: object
+              resourceQuotaName:
+                description: ResourceQuotaName
+                type: string
+              tenant:
+                description: "Tenant \u79DF\u6237"
+                type: string
+            required:
+            - deletePolicy
+            - namespace
+            - project
+            - tenant
+            type: object
+          status:
+            description: EnvironmentStatus defines the observed state of Environment
+            properties:
+              lastUpdateTime:
+                description: "\u6700\u540E\u66F4\u65B0\u65F6\u95F4"
+                format: date-time
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ''
+    plural: ''
+  conditions: []
+  storedVersions: []

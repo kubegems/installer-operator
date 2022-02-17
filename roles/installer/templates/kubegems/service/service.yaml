@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-service
+  name: gems-service
+  namespace: gemcloud-system
+spec:
+  ports:
+  - name: http-8020
+    port: 8020
+    protocol: TCP
+    targetPort: 8020
+  - name: http-9100
+    port: 9100
+    protocol: TCP
+    targetPort: 9100
+  selector:
+    app.kubernetes.io/name: gems-service
+  type: ClusterIP

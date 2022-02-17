@@ -1,0 +1,81 @@
+---
+- name: Core Plugins | Create Namespace Cert Manager
+  community.kubernetes.k8s:
+    name: cert-manager
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Core Plugins | Cert Manager | CRDs
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - cert-manager/crds/certificaterequests.yaml
+    - cert-manager/crds/certificates.yaml
+    - cert-manager/crds/challenges.yaml
+    - cert-manager/crds/clusterissuers.yaml
+    - cert-manager/crds/issuers.yaml
+    - cert-manager/crds/orders.yaml
+
+- name: Core Plugins | Cert Manager | RBACs
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - cert-manager/rbac/sa.yaml
+    - cert-manager/rbac/sa-cainjector.yaml
+    - cert-manager/rbac/sa-webhook.yaml
+    - cert-manager/rbac/clusterrole-approve.yaml
+    - cert-manager/rbac/clusterrolebinding-approve.yaml
+    - cert-manager/rbac/clusterrole-cainjector.yaml
+    - cert-manager/rbac/clusterrolebinding-cainjector.yaml
+    - cert-manager/rbac/clusterrole-certificates.yaml
+    - cert-manager/rbac/clusterrolebinding-certificates.yaml
+    - cert-manager/rbac/clusterrole-challenges.yaml
+    - cert-manager/rbac/clusterrolebinding-challenges.yaml
+    - cert-manager/rbac/clusterrole-certificatesigningrequests.yaml
+    - cert-manager/rbac/clusterrolebinding-certificatesigningrequests.yaml
+    - cert-manager/rbac/clusterrole-clusterissuers.yaml
+    - cert-manager/rbac/clusterrolebinding-clusterissuers.yaml
+    - cert-manager/rbac/clusterrole-issuers.yaml
+    - cert-manager/rbac/clusterrolebinding-issuers.yaml
+    - cert-manager/rbac/clusterrole-ingress.yaml
+    - cert-manager/rbac/clusterrolebinding-ingress.yaml
+    - cert-manager/rbac/clusterrole-orders.yaml
+    - cert-manager/rbac/clusterrolebinding-orders.yaml
+    - cert-manager/rbac/clusterrole-subjectaccessreviews.yaml
+    - cert-manager/rbac/clusterrolebinding-subjectaccessreviews.yaml
+    - cert-manager/rbac/clusterrole-edit.yaml
+    - cert-manager/rbac/clusterrole-view.yaml
+    - cert-manager/rbac/role-webhook.yaml
+    - cert-manager/rbac/role-leader.yaml
+    - cert-manager/rbac/role-cainjector-leader.yaml
+    - cert-manager/rbac/rolebinding-cainjector.yaml
+    - cert-manager/rbac/rolebinding-leader.yaml
+    - cert-manager/rbac/rolebinding-webhook.yaml
+
+- name: Core Plugins | Cert Manager Workloads
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+    wait: yes
+    wait_sleep: 10
+    wait_condition:
+      reason: MinimumReplicasAvailable
+      status: True
+      type: Available
+  with_items:
+    - cert-manager/deploy.yaml
+    - cert-manager/deploy-cainjector.yaml
+    - cert-manager/deploy-webhook.yaml
+
+- name: Core Plugins | Cert Manager Service
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - cert-manager/service.yaml
+    - cert-manager/service-webhook.yaml
+    - cert-manager/webhook-mutate.yaml
+    - cert-manager/webhook-validate.yaml

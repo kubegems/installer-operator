@@ -1,0 +1,2178 @@
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDashboard
+metadata:
+  name: loki-redis
+  namespace: gemcloud-logging-system
+  labels:
+    kubegems.io/plugins: logging
+    app: grafana
+spec:
+  datasources:
+    - inputName: "DS_PROMETHEUS"
+      datasourceName: "loki"
+  json: >
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "Prometheus",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "description": "GemCloud Logging System Cache",
+      "editable": true,
+      "gnetId": 763,
+      "graphTooltip": 1,
+      "id": 2,
+      "iteration": 1619599796941,
+      "links": [],
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "N/A",
+                  "type": 1,
+                  "value": "null"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "super-light-green",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 2,
+            "x": 0,
+            "y": 0
+          },
+          "hideTimeOverride": true,
+          "id": 27,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/^redis_version$/",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_instance_info{job=\"loki-redis-metrics\"}",
+              "format": "table",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "metric": "",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "timeFrom": "1m",
+          "timeShift": null,
+          "title": "Redis版本",
+          "transparent": true,
+          "type": "stat"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "N/A",
+                  "type": 1,
+                  "value": "null"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "super-light-green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 3,
+            "x": 2,
+            "y": 0
+          },
+          "id": 9,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_uptime_in_seconds{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "instant": true,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "metric": "",
+              "refId": "A",
+              "step": 1800
+            }
+          ],
+          "title": "运行时间",
+          "transparent": true,
+          "type": "stat"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "关闭",
+                  "type": 1,
+                  "value": "0"
+                },
+                {
+                  "id": 1,
+                  "op": "=",
+                  "text": "开启",
+                  "type": 1,
+                  "value": "1"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "super-light-orange",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 2,
+            "x": 5,
+            "y": 0
+          },
+          "hideTimeOverride": true,
+          "id": 28,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_aof_enabled{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "instant": false,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "metric": "",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "timeFrom": "1m",
+          "timeShift": null,
+          "title": "AOF",
+          "transparent": true,
+          "type": "stat"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "N/A",
+                  "type": 1,
+                  "value": "null"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "super-light-green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 3,
+            "x": 7,
+            "y": 0
+          },
+          "hideTimeOverride": true,
+          "id": 30,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_slowlog_last_id{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "metric": "",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "timeFrom": "1m",
+          "timeShift": null,
+          "title": "最近慢查询id",
+          "transparent": true,
+          "type": "stat"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 3,
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "N/A",
+                  "type": 1,
+                  "value": "null"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 20
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 3,
+            "x": 10,
+            "y": 0
+          },
+          "hideTimeOverride": true,
+          "id": 26,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": " 1 - sum(redis_db_keys_expiring{job=\"loki-redis-metrics\"})  / sum(redis_db_keys{job=\"loki-redis-metrics\"})",
+              "format": "time_series",
+              "instant": false,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "metric": "",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "timeFrom": "1m",
+          "timeShift": null,
+          "title": "永久key比例",
+          "transparent": true,
+          "type": "stat"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "N/A",
+                  "type": 1,
+                  "value": "null"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 2,
+            "x": 13,
+            "y": 0
+          },
+          "hideTimeOverride": true,
+          "id": 12,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_connected_clients{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "metric": "",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "timeFrom": "1m",
+          "timeShift": null,
+          "title": "Clients",
+          "transparent": true,
+          "type": "stat"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "Active",
+                  "type": 1,
+                  "value": "online"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 3,
+            "x": 15,
+            "y": 0
+          },
+          "hideTimeOverride": true,
+          "id": 24,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_connected_slave_lag_seconds{job=\"loki-redis-metrics\"}",
+              "format": "table",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "metric": "",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "timeFrom": "1m",
+          "timeShift": null,
+          "title": "Slave状态",
+          "transparent": true,
+          "type": "stat"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "N/A",
+                  "type": 1,
+                  "value": "null"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 3,
+            "x": 18,
+            "y": 0
+          },
+          "hideTimeOverride": true,
+          "id": 22,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/^redis_connected_slaves{cloud_cluster=\"cloud-poc-0\", cloud_type=\"prometheus\", instance=\"172.16.31.102:9122\", job=\"loki-redis-cache\"}$/",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.4",
+          "timeFrom": "1m",
+          "timeShift": null,
+          "title": "Slave节点",
+          "transparent": true,
+          "type": "stat"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "N/A",
+                  "type": 1,
+                  "value": "null"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 3,
+            "x": 21,
+            "y": 0
+          },
+          "hideTimeOverride": true,
+          "id": 23,
+          "interval": null,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/^redis_connected_slave_lag_seconds{app=\"map-redis-exporter\", cloud_cluster=\"cloud-prod-4\", instance=\"10.58.0.79:9121\", job=\"kubernetes-pods\", kubernetes_namespace=\"harix-map-v3-251\", kubernetes_pod_name=\"map-redis-exporter-84b976cdff-nsvlz\", pod_template_hash=\"84b976cdff\", prometheus=\"middleware\", slave_ip=\"10.58.0.125\", slave_port=\"6379\", slave_state=\"online\"}$/",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_connected_slave_lag_seconds{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "metric": "",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "timeFrom": "1m",
+          "timeShift": null,
+          "title": "Slave延迟状态",
+          "transparent": true,
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "max client"
+                },
+                "properties": [
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.lineWidth",
+                    "value": 0
+                  },
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "custom.axisPlacement",
+                    "value": "hidden"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 9,
+            "x": 0,
+            "y": 2
+          },
+          "id": 5,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum (redis_db_keys{job=\"loki-redis-metrics\"}) by (db)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "{{ db }} ",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            },
+            {
+              "exemplar": true,
+              "expr": "redis_config_maxclients{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "max client",
+              "refId": "B",
+              "step": 240,
+              "target": ""
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Items数量 by db",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "decimals": 0,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 7,
+            "x": 9,
+            "y": 2
+          },
+          "id": 14,
+          "interval": null,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "topk(5, rate(redis_commands_total{job=\"loki-redis-metrics\"}[5m]))",
+              "format": "time_series",
+              "instant": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{cmd}}",
+              "metric": "redis_command_calls_total",
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "各操作top5的qps",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 8,
+            "x": 16,
+            "y": 2
+          },
+          "id": 29,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": " topk(5,rate(redis_commands_duration_seconds_total{job=\"loki-redis-metrics\"}[5m]))",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "{{cmd}}",
+              "metric": "redis_command_calls_total",
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "各操作top5的qps耗时",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 0,
+            "y": 8
+          },
+          "id": 2,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(redis_commands_processed_total{job=\"loki-redis-metrics\"}[5m])",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "QPS",
+              "metric": "A",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "QPS",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 6,
+            "y": 8
+          },
+          "hiddenSeries": false,
+          "id": 15,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.5.4",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(redis_cpu_user_seconds_total{job=\"loki-redis-metrics\"}[5m]) + rate(redis_cpu_sys_seconds_total{job=\"loki-redis-metrics\"}[5m])",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "{{ job }}",
+              "metric": "A",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "CPU使用率",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "percentunit",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 12,
+            "y": 8
+          },
+          "id": 17,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_memory_used_bytes{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "{{job}}",
+              "metric": "A",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "内存使用",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 18,
+            "y": 8
+          },
+          "id": 10,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(redis_net_input_bytes_total{job=\"loki-redis-metrics\"}[5m])",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "入口",
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "exemplar": true,
+              "expr": "rate(redis_net_output_bytes_total{job=\"loki-redis-metrics\"}[5m])",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "出口",
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "网络流量",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 6,
+            "x": 0,
+            "y": 14
+          },
+          "id": 25,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_last_slow_execution_duration_seconds{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "{{ job }}",
+              "metric": "A",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "最慢查询时间",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 6,
+            "x": 6,
+            "y": 14
+          },
+          "id": 16,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_latest_fork_seconds{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "forktime",
+              "metric": "A",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "最近fork线程时间",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 6,
+            "x": 12,
+            "y": 14
+          },
+          "id": 1,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "irate(redis_keyspace_hits_total{job=\"loki-redis-metrics\"}[5m])",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "hits",
+              "metric": "",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            },
+            {
+              "exemplar": true,
+              "expr": "irate(redis_keyspace_misses_total{job=\"loki-redis-metrics\"}[5m])",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "misses",
+              "metric": "",
+              "refId": "B",
+              "step": 240,
+              "target": ""
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Hits / Misses per Sec",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 6,
+            "x": 18,
+            "y": 14
+          },
+          "id": 21,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_connected_slave_offset_bytes{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "{{slave_ip}}",
+              "metric": "A",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Slave数据偏差",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "evicts"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#890F02",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "memcached_items_evicted_total{instance=\"172.17.0.1:9150\",job=\"prometheus\"}"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#890F02",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reclaims"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#3F6833",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 0,
+            "y": 19
+          },
+          "id": 8,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(rate(redis_expired_keys_total{job=\"loki-redis-metrics\"}[5m])) by (instance)",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "expired",
+              "metric": "",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            },
+            {
+              "exemplar": true,
+              "expr": "sum(rate(redis_evicted_keys_total{job=\"loki-redis-metrics\"}[5m])) by (instance)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "evicted",
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Expired / Evicted",
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "graph": false,
+                  "legend": false,
+                  "tooltip": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "evicts"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#890F02",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "memcached_items_evicted_total{instance=\"172.17.0.1:9150\",job=\"prometheus\"}"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#890F02",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reclaims"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#3F6833",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 6,
+            "y": 19
+          },
+          "id": 33,
+          "links": [],
+          "options": {
+            "graph": {},
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltipOptions": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "7.5.4",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "redis_connected_clients{job=\"loki-redis-metrics\"}",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "connected",
+              "metric": "",
+              "refId": "A",
+              "step": 240,
+              "target": ""
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "connected",
+          "transparent": true,
+          "type": "timeseries"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 27,
+      "style": "dark",
+      "tags": [
+        "loki",
+        "cache",
+        "redis"
+      ],
+      "templating": {
+        "list": [
+          {
+            "auto": true,
+            "auto_count": 30,
+            "auto_min": "10s",
+            "current": {
+              "selected": false,
+              "text": "1m",
+              "value": "1m"
+            },
+            "description": null,
+            "error": null,
+            "hide": 0,
+            "label": "interval",
+            "name": "interval",
+            "options": [
+              {
+                "selected": false,
+                "text": "auto",
+                "value": "$__auto_interval_interval"
+              },
+              {
+                "selected": true,
+                "text": "1m",
+                "value": "1m"
+              },
+              {
+                "selected": false,
+                "text": "10m",
+                "value": "10m"
+              },
+              {
+                "selected": false,
+                "text": "30m",
+                "value": "30m"
+              },
+              {
+                "selected": false,
+                "text": "1h",
+                "value": "1h"
+              },
+              {
+                "selected": false,
+                "text": "6h",
+                "value": "6h"
+              },
+              {
+                "selected": false,
+                "text": "12h",
+                "value": "12h"
+              },
+              {
+                "selected": false,
+                "text": "1d",
+                "value": "1d"
+              },
+              {
+                "selected": false,
+                "text": "7d",
+                "value": "7d"
+              },
+              {
+                "selected": false,
+                "text": "14d",
+                "value": "14d"
+              },
+              {
+                "selected": false,
+                "text": "30d",
+                "value": "30d"
+              }
+            ],
+            "query": "1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
+            "queryValue": "",
+            "refresh": 2,
+            "skipUrlSync": false,
+            "type": "interval"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-1h",
+        "to": "now"
+      },
+      "timepicker": {
+        "hidden": false,
+        "refresh_intervals": [
+          "10s",
+          "30s",
+          "1m",
+          "5m",
+          "15m",
+          "30m",
+          "1h",
+          "2h",
+          "1d"
+        ],
+        "time_options": [
+          "5m",
+          "15m",
+          "1h",
+          "6h",
+          "12h",
+          "24h",
+          "2d",
+          "7d",
+          "30d"
+        ]
+      },
+      "timezone": "browser",
+      "title": "loki-redis",
+      "uid": "e4boDROGk",
+      "version": 2
+    }

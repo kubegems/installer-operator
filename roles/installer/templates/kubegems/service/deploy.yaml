@@ -1,0 +1,89 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-service
+  name: gems-service
+  namespace: gemcloud-system
+spec:
+  replicas: {{ core_plugins.kubegems_centrol.operator.gems_service.replicas | default('1') }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gems-service
+  strategy:
+    type: Recreate
+  template: 
+    metadata:
+      labels:
+        app.kubernetes.io/name: gems-service
+    spec:
+      affinity:
+        podAffinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: gems-service
+                namespaces:
+                  - "gemcloud-system"
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        nodeAffinity:
+      containers:
+      - name: gems-service
+        image: "{{ global.repository | default('docker.io/kubegems')}}/kubegems:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
+        args: ["service"]
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8020
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 8020
+          name: http-8020
+        - containerPort: 9100
+          name: http-9100
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8020
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - mountPath: /serv/config/
+          name: gems-service-config
+        - mountPath: /serv/certs/jwt
+          name: gems-jwt-certs
+        - mountPath: /etc/localtime
+          name: timezone
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+      - name: {{ global.imagepullsecret | default('kubegems') }}
+      {% endif %}
+      restartPolicy: Always
+      volumes:
+      - configMap:
+          name: gems-service-config
+        name: gems-service-config
+      - name: gems-jwt-certs
+        secret:
+          secretName: gems-service-certs-secret
+      - hostPath:
+          path: /etc/localtime
+        name: timezone

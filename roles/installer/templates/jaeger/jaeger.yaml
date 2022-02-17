@@ -1,0 +1,32 @@
+#jinja2:lstrip_blocks: True
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger
+  namespace: observability
+spec:
+  strategy: production
+  sampling:
+    options:
+      default_strategy:
+        type: {{ core_plugins.jaeger.operator.sampling.type | default('probabilistic') }}
+        param: {{ core_plugins.jaeger.operator.sampling.param | default('0.5') }}
+  ingress:
+    enabled: false
+  agent:
+    image: "{{ global.repository | default('docker.io/kubernetes') }}/jaeger-agent:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}"
+  query:
+    image: "{{ global.repository | default('docker.io/kubernetes') }}/jaeger-query:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}"
+  collector:
+    image: "{{ global.repository | default('docker.io/kubernetes') }}/jaeger-collector:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}"
+    options:
+      collector.zipkin.host-port: "9411"
+  storage:
+    type: elasticsearch
+    options:
+      es:
+      {% if not core_plugins.jaeger.operator.elasticsearch.enabled and core_plugins.jaeger.operator.elasticsearch.external_urls is defined %}
+        server-urls: {{ core_plugins.jaeger.operator.elasticsearch.external_urls }}
+      {% else %}
+        server-urls: http://gems-elasticsearch.observability.svc.cluster.local:9200
+      {% endif %}

@@ -1,0 +1,32 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: kube-state-metrics
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: kube-state-metrics
+spec:
+  privileged: false
+  volumes:
+    - 'secret'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1001
+        max: 1001
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1001
+        max: 1001
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1001
+        max: 1001
+  readOnlyRootFilesystem: false

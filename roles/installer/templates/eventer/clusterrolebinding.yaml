@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-eventer
+  name: gems-eventer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gems-cluster-viewer
+subjects:
+  - kind: ServiceAccount
+    namespace: gemcloud-logging-system
+    name: gems-eventer

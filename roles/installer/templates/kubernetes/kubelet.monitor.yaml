@@ -1,0 +1,48 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-kubelet
+  namespace: gemcloud-monitoring-system
+  labels:
+    kubegems.io/plugins: monitoring
+    app.kubernetes.io/name: kubelet
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubelet
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  endpoints:
+    # kubelet 本身指标
+    - port: https-metrics
+      scheme: https
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        serverName: kubernetes
+        insecureSkipVerify: true
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      honorLabels: true
+      relabelings:
+        - regex: endpoint|service
+          action: labeldrop
+      metricRelabelings:
+        - regex: instance
+          action: labeldrop
+    # 容器指标
+    - port: https-metrics
+      path: /metrics/cadvisor
+      scheme: https
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        serverName: kubernetes
+        insecureSkipVerify: true
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      honorLabels: true
+      relabelings:
+        - regex: endpoint|service
+          action: labeldrop
+      # id 为自带的label，只有在metricRelabelings drop
+      metricRelabelings:
+        - regex: id|instance
+          action: labeldrop

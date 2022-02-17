@@ -1,0 +1,53 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-redis
+  name: gems-redis
+  namespace: gemcloud-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gems-redis
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gems-redis
+    spec:
+      containers:
+      - args:
+        - /etc/redis/redis-server.conf
+        command:
+        - redis-server
+        image: "{{ global.repository | default('docker.io') }}/redis:6.0.10"
+        imagePullPolicy: IfNotPresent
+        name: gems-redis
+        ports:
+        - containerPort: 6379
+          name: tcp-6379
+        resources:
+          limits:
+            cpu: 1024m
+            memory: 2048Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /etc/redis
+          name: gems-redis-config
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+      - name: {{ global.imagepullsecret | default('kubegems') }}
+      {% endif %}
+      restartPolicy: Always
+      volumes:
+      - configMap:
+          name: gems-redis-config
+        name: gems-redis-config

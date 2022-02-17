@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: nginx-ingress-operator
+  name: nginx-ingress-operator-metrics
+  namespace: gemcloud-gateway-system
+spec:
+  ports:
+    - name: http-metrics
+      port: 9113
+      protocol: TCP
+      targetPort: 9113
+  selector:
+    name: nginx-ingress-operator
+  type: ClusterIP

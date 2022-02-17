@@ -1,0 +1,67 @@
+- name: Core Plugins | Prometheus Operator | CRDs
+  when: core_plugins.monitoring.operator.prometheus.enabled
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - prometheus/operator/crds/crd-alertmanager-config.yaml
+    - prometheus/operator/crds/crd-alertmanager.yaml
+    - prometheus/operator/crds/crd-podmonitor.yaml
+    - prometheus/operator/crds/crd-probes.yaml
+    - prometheus/operator/crds/crd-prometheus.yaml
+    - prometheus/operator/crds/crd-prometheusrules.yaml
+    - prometheus/operator/crds/crd-servicemonitor.yaml
+    - prometheus/operator/crds/crd-thanosrulers.yaml
+
+- name: Core Plugins | Prometheus Operator 
+  community.kubernetes.k8s:
+    state: '{{"present" if core_plugins.monitoring.operator.prometheus.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - prometheus/operator/sa.yaml
+    - prometheus/operator/psp.yaml
+    - prometheus/operator/clusterrole.yaml
+    - prometheus/operator/clusterrolebinding.yaml
+    - prometheus/operator/clusterrole-psp.yaml
+    - prometheus/operator/clusterrolebinding-psp.yaml
+    - prometheus/operator/configmap.yaml
+    - prometheus/operator/deploy.yaml
+    - prometheus/operator/service.yaml
+    - prometheus/operator/monitor.yaml
+
+- name: Core Plugins | Prometheus 
+  community.kubernetes.k8s:
+    state: '{{"present" if core_plugins.monitoring.operator.prometheus.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - prometheus/prometheus/sa.yaml
+    - prometheus/prometheus/psp.yaml
+    - prometheus/prometheus/clusterrole.yaml
+    - prometheus/prometheus/clusterrolebinding.yaml
+    - prometheus/prometheus/clusterrole-psp.yaml
+    - prometheus/prometheus/clusterrolebinding-psp.yaml
+    - prometheus/prometheus/additional-scrape-configs.yaml
+    - prometheus/prometheus/prometheus.yaml
+
+- name: Core Plugins | Prometheus Service
+  when: core_plugins.monitoring.operator.prometheus.enabled
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - prometheus/prometheus/service.yaml
+
+# alertmanager dependent by prometheus operator
+- name: Core Plugins | AlertManager 
+  community.kubernetes.k8s:
+    state: '{{"present" if core_plugins.monitoring.operator.alertmanager.enabled and core_plugins.monitoring.operator.prometheus.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - prometheus/alertmanager/sa.yaml
+    - prometheus/alertmanager/psp.yaml
+    - prometheus/alertmanager/secret.yaml
+    - prometheus/alertmanager/clusterrole-psp.yaml
+    - prometheus/alertmanager/clusterrolebinding-psp.yaml
+    - prometheus/alertmanager/alertmanager.yaml
+    - prometheus/alertmanager/service.yaml
+    - prometheus/alertmanager/monitor.yaml

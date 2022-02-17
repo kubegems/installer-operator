@@ -1,0 +1,14 @@
+- name: Kubernetes Plugins | Metrics Server
+  community.kubernetes.k8s:
+    state: '{{"present" if kubernetes_plugins.metrics_server.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - metrics-server/sa.yaml
+    - metrics-server/clusterrole-reader.yaml
+    - metrics-server/clusterrole.yaml
+    - metrics-server/clusterrolebinding.yaml
+    - metrics-server/clusterrolebinding-reader.yaml
+    - metrics-server/clusterrolebinding-auth.yaml
+    - metrics-server/deploy.yaml
+    - metrics-server/service.yaml
+    - metrics-server/api.service.yaml

@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: gems-service-jwt
+  namespace: gemcloud-system
+  labels:
+    app.kubernetes.io/name: gems-service
+spec:
+  duration: 8760h
+  renewBefore: 360h
+  usages:
+    - "signing"
+    - "digital signature"
+    - "key encipherment"
+    - "server auth"
+    - "client auth"
+  secretName: gems-service-certs-secret
+  dnsNames:
+    - gems-service.gemcloud-system.svc
+    - gems-service.gemcloud-system.svc.cluster.local
+  issuerRef: # agent 的 tls 依旧使用自签发证书，该证书同时支持 client auth 与 server auth，service 连接时会从数据库获取 agent 的自签发证书作为客户端认证证书。
+    kind: Issuer
+    name: gems-service

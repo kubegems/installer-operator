@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-kube-controller-manager
+  namespace: gemcloud-monitoring-system
+  labels:
+    kubegems.io/plugins: monitoring
+    app.kubernetes.io/name: kube-controller-manager
+spec:
+  # jobLabel: component
+  selector:
+    matchLabels:
+      kubegems.io/plugins: monitoring
+      app.kubernetes.io/name: kube-controller-manager
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  endpoints:
+    - port: https-metrics
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

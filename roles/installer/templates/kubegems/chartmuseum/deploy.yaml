@@ -1,0 +1,54 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-chartmuseum
+  name: gems-chartmuseum
+  namespace: gemcloud-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gems-chartmuseum
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gems-chartmuseum
+    spec:
+      containers:
+      - env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: gems-minio
+              key: access-key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: gems-minio
+              key: secret-key
+        image: "{{ global.repository | default('docker.io/kubegems')}}/gems-chartmuseum:v0.14.0-gems"
+        imagePullPolicy: IfNotPresent
+        name: gems-chartmuseum
+        ports:
+        - containerPort: 8030
+          name: http-8030
+        resources:
+          limits:
+            cpu: 1024m
+            memory: 1024Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+      - name: {{ global.imagepullsecret | default('kubegems') }}
+      {% endif %}
+      restartPolicy: Always
+ 

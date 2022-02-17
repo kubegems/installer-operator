@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kube-state-metrics
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: kube-state-metrics
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kube-state-metrics
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  endpoints:
+    - port: http
+      honorLabels: true
+      relabelings:
+        # 这里container、pod、namespace是kube-state-metrics的，没意义，还会导致原有的因为重名被替换为exported_*，这里drop掉namespace等标签不会影响自有的重名namespace标签
+        - regex: endpoint|service|container|pod|namespace
+          action: labeldrop
+      metricRelabelings:
+        - regex: container_id|image_id|instance
+          action: labeldrop

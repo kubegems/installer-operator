@@ -1,0 +1,76 @@
+#jinja2:lstrip_blocks: True
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kiali
+  namespace: istio-system
+  labels:
+    app: kiali
+    app.kubernetes.io/name: kiali
+    version: "v1.38.0"
+data:
+  config.yaml: |
+    auth:
+      openid: {}
+      openshift:
+        client_id_prefix: kiali
+      strategy: anonymous
+    deployment:
+      accessible_namespaces:
+      - '**'
+      additional_service_yaml: {}
+      affinity:
+        node: {}
+        pod: {}
+        pod_anti: {}
+      hpa:
+        api_version: autoscaling/v2beta2
+        spec: {}
+      image_name: {{ global.repository | default('docker.io/kubegems') }}/kiali
+      image_pull_policy: IfNotPresent
+      image_pull_secrets: []
+      image_version: v1.38
+      ingress_enabled: false
+      instance_name: kiali
+      logger:
+        log_format: text
+        log_level: info
+        sampler_rate: "1"
+        time_field_format: 2006-01-02T15:04:05Z07:00
+      namespace: istio-system
+      node_selector: {}
+      override_ingress_yaml:
+        metadata: {}
+      pod_annotations:
+        sidecar.istio.io/inject: "false"
+      pod_labels: {}
+      priority_class_name: ""
+      replicas: 1
+      resources: {}
+      secret_name: kiali
+      service_annotations: {}
+      service_type: ""
+      tolerations: []
+      version_label: v1.38.0
+      view_only_mode: true
+    external_services:
+      custom_dashboards:
+        enabled: true
+      grafana:
+        in_cluster_url: "{{ core_plugins.istio.operator.kiali.grafana_urls | default('http://grafana-service.gemcloud-monitoring-system.svc.cluster.local:3000') }}"
+        url: "{{ core_plugins.istio.operator.kiali.grafana_urls | default('http://grafana-service.gemcloud-monitoring-system.svc.cluster.local:3000') }}"
+      prometheus:
+        url: "{{ core_plugins.istio.operator.kiali.prometheus_urls | default('http://prometheus.gemcloud-monitoring-system.svc.cluster.local:9000') }}"
+      tracing:
+        in_cluster_url: "{{ core_plugins.istio.operator.kiali.trace_urls | default('http://jaeger-query.observability.svc.cluster.local:16685/jaeger') }}"
+    identity:
+      cert_file: ""
+      private_key_file: ""
+    istio_namespace: istio-system
+    login_token:
+      signing_key: CHANGEME
+    server:
+      metrics_enabled: true
+      metrics_port: 9090
+      port: 20001
+      web_root: /kiali

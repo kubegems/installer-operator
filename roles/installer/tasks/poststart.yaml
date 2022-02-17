@@ -1,0 +1,158 @@
+- name: Core Plugins | Rules | Recording Rules 
+  when:
+    - core_plugins.monitoring.operator.prometheus is defined
+    - core_plugins.monitoring.operator.prometheus.enabled
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', item) | from_yaml }}"
+  with_items:
+    - prometheus/recording.rule.yaml
+
+- name: Core Plugins | Rules | Alert Rules 
+  when: 
+    - core_plugins.monitoring.operator.prometheus is defined
+    - core_plugins.monitoring.operator.prometheus.enabled
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', item) | from_yaml }}"
+    merge_type: strategic-merge
+  ignore_errors: yes
+  with_items:
+    - prometheus/alerting.rule.yaml
+    - prometheus/logging.rule.yaml
+    - alertmanager/config.yaml
+
+- name: Core Plugins | Metrics | Server
+  when: 
+    - mode == "centrol"
+    - core_plugins.monitoring.operator.prometheus is defined
+    - core_plugins.monitoring.operator.prometheus.enabled
+  ignore_errors: true
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - kubegems/service/monitor.yaml
+    - kubegems/worker/monitor.yaml
+    - argocd/monitor.yaml
+    - argocd/monitor-server.yaml
+    - argocd/monitor-repo.yaml
+
+- name: Core Plugins | Metrics | Kubernetes KubeGems Metrics
+  when: 
+    - core_plugins.monitoring.operator.prometheus is defined
+    - core_plugins.monitoring.operator.prometheus.enabled
+  ignore_errors: true
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - kubernetes/apiserver.monitor.yaml
+    - kubernetes/coredns.monitor.yaml
+    - kubernetes/kube-controller-manager.svc.yaml
+    - kubernetes/kube-controller-manager.monitor.yaml
+    - kubernetes/kube-scheduler.svc.yaml
+    - kubernetes/kube-scheduler.monitor.yaml
+    - kubernetes/kube-proxy.svc.yaml
+    - kubernetes/kube-proxy.monitor.yaml
+    - kubernetes/kubelet.monitor.yaml
+    - cert-manager/podmonitor.yaml  
+    - kubegems/agent/monitor.yaml
+    - gateway/metrics/monitor.yaml
+
+- name: Core Plugins | Metrics | Plugins Kube State Metrics
+  when: 
+    - core_plugins.monitoring.operator.prometheus is defined
+    - core_plugins.monitoring.operator.prometheus.enabled
+    - core_plugins.kube_state_metrics.enabled
+  ignore_errors: true
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - kube-state-metrics/monitor.yaml
+
+- name: Kubernetes Plugins | Metrics | Plugins Node Exporter Metrics
+  when: 
+    - core_plugins.monitoring.operator.prometheus is defined
+    - core_plugins.monitoring.operator.prometheus.enabled
+    - core_plugins.node_exporter.enabled
+  ignore_errors: true
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - node-exporter/monitor.yaml
+
+- name: Kubernetes Plugins | Metrics | Plugins Node Problem Detector Metrics
+  when: 
+    - core_plugins.monitoring.operator.prometheus is defined
+    - core_plugins.monitoring.operator.prometheus.enabled
+    - kubernetes_plugins.node_problem_detector is defined
+    - kubernetes_plugins.node_problem_detector.enabled
+  ignore_errors: true
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - node-problem-detector/monitor.yaml
+
+- name: Core Plugins | Metrics | Plugins Istio Metrics
+  when: 
+    - core_plugins.monitoring.operator.prometheus is defined
+    - core_plugins.monitoring.operator.prometheus.enabled
+    - core_plugins.istio is defined
+    - core_plugins.istio.enabled
+  ignore_errors: true
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - istio/envoy.monitor.yaml
+    - istio/istiod.monitor.yaml
+
+- name: Core Plugins | Pormetheus | External Service
+  when: 
+    - core_plugins.monitoring.operator.prometheus is defined
+    - not core_plugins.monitoring.operator.prometheus.enabled
+    - core_plugins.monitoring.operator.prometheus.external_host is defined
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - prometheus/prometheus/external/service.yaml
+    - prometheus/prometheus/external/ep.yaml
+
+- name: Core Plugins | Loki | External Service
+  when: 
+    - core_plugins.logging.operator.loki is defined
+    - not core_plugins.logging.operator.loki.enabled 
+    - core_plugins.logging.operator.loki.external_host is defined
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - loki/external/service.yaml
+    - loki/external/ep.yaml
+
+- name: Core Plugins | Gems Jobs
+  when: mode == "centrol" and location == "inside"
+  ignore_errors: true
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - kubegems/chartmuseum/uploader.yaml
+    - kubegems/service/sqlinit.job.yaml
+
+#- name: Gems Docs
+#  vars:
+#    enabled_kubegems_docs: "{{ lookup('env', 'ENABLED_KUBEGEMS_DOCS') | default('off', True) }}"  
+#  when: enabled_kubegems_docs == "on"
+#  community.kubernetes.k8s:
+#    state: '{{"present" if enabled_docs else "absent"}}'
+#    definition: "{{ lookup('template', item) | from_yaml }}"
+#  with_items:
+#    - gems/docs/deploy.yaml
+#    - gems/docs/service.yaml
+#

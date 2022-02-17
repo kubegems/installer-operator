@@ -1,0 +1,104 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  annotations:
+  labels:
+    name: tke-gpu-manager
+  name: tke-gpu-manager
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: tke-gpu-manager
+  template:
+    metadata:
+      labels:
+        name: tke-gpu-manager
+    spec:
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+        - name: {{ global.imagepullsecret | default('kubegems')}}
+      {% endif %}
+      containers:
+      - env:
+        - name: LOG_LEVEL
+          value: "1"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        {% if runtime == "containerd" %}
+        - name: EXTRA_FLAGS
+          value: --container-runtime-endpoint=/var/run/containerd/containerd.sock
+        {% endif %}
+        image: "{{ global.repository | default('docker.io/kubegems')}}/gpu-manager:{{ kubernetes_plugins.gpu_manager.details.version | default('v1.1.2')}}"
+        imagePullPolicy: Always
+        name: gpu-manager
+        ports:
+        - containerPort: 5678
+          protocol: TCP
+        resources: {}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /var/lib/kubelet/device-plugins
+          name: device-plugin
+        - mountPath: /etc/gpu-manager/vdriver
+          name: vdriver
+        - mountPath: /etc/gpu-manager/vm
+          name: vmdata
+        - mountPath: /var/log/gpu-manager
+          name: log
+        - mountPath: /var/run
+          name: run-dir
+        - mountPath: /sys/fs/cgroup
+          name: cgroup
+        - mountPath: /usr/local/host
+          name: usr-directory
+      dnsPolicy: ClusterFirst
+      hostPID: true
+      nodeSelector:
+        tencent.com/vcuda: "true"
+      priorityClassName: system-node-critical
+      restartPolicy: Always
+      serviceAccount: tke-gpu-manager
+      serviceAccountName: tke-gpu-manager
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - effect: NoSchedule
+        key: tencent.com/vcuda
+        operator: Exists
+      volumes:
+      - hostPath:
+          path: /var/lib/kubelet/device-plugins
+          type: Directory
+        name: device-plugin
+      - hostPath:
+          path: /etc/gpu-manager/vm
+          type: DirectoryOrCreate
+        name: vmdata
+      - hostPath:
+          path: /etc/gpu-manager/vdriver
+          type: DirectoryOrCreate
+        name: vdriver
+      - emptyDir: {}
+        name: log
+      - hostPath:
+          path: /var/run
+          type: Directory
+        name: run-dir
+      - hostPath:
+          path: /sys/fs/cgroup
+          type: Directory
+        name: cgroup
+      - hostPath:
+          path: /usr
+          type: Directory
+        name: usr-directory
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: node-problem-detector
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: node-problem-detector

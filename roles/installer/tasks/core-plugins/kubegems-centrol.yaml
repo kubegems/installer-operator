@@ -1,0 +1,70 @@
+- name: Core Plugins | KubeGems Service
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - kubegems/mysql/pvc.yaml
+    - kubegems/mysql/deploy.yaml
+    - kubegems/mysql/service.yaml
+    - kubegems/minio/secret.yaml
+    - kubegems/minio/pvc.yaml
+    - kubegems/minio/deployment.yaml
+    - kubegems/minio/service.yaml
+    - kubegems/redis/configmap.yaml
+    - kubegems/redis/deploy.yaml
+    - kubegems/redis/service.yaml
+    - kubegems/gitea/pvc.yaml
+    - kubegems/gitea/secret.config.yaml
+    - kubegems/gitea/secret.init.yaml
+    - kubegems/gitea/deploy.yaml
+    - kubegems/gitea/service.yaml
+    - kubegems/chartmuseum/deploy.yaml
+    - kubegems/chartmuseum/service.yaml
+    - kubegems/service/issuer.yaml
+    - kubegems/service/certification.yaml
+    - kubegems/service/deploy.yaml
+    - kubegems/service/service.yaml
+
+- name: Core Plugins | Lookup kubeGems Service Config
+  set_fact:
+    gems_service_config: "{{ gems_service_config | default({}) | combine({ item | basename : lookup('file', item) }) }}"
+  with_fileglob: "kubegems/service/*"
+  notify:
+    - Scale down KubeGems Service
+    - Scale up KubeGems Service
+
+- name: Core Plugins | Apply Gems Service Config
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: gems-service-config
+        namespace: gemcloud-system
+      data: "{{ gems_service_config }}"
+
+- name: Core Plugins | KubeGems Msgbus
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - kubegems/msgbus/deploy.yaml
+    - kubegems/msgbus/service.yaml
+
+- name: Core Plugins | KubeGems Worker
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - kubegems/worker/deploy.yaml
+    - kubegems/worker/service.yaml
+
+- name: Core Plugins | KubeGems Dashboard
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - kubegems/dashboard/configmap.yaml
+    - kubegems/dashboard/deploy.yaml
+    - kubegems/dashboard/service.yaml

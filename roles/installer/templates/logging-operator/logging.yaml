@@ -1,0 +1,147 @@
+#jinja2:lstrip_blocks: True
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Logging
+metadata:
+  name: gems-logging
+  namespace: gemcloud-logging-system
+spec:
+  allowClusterResourcesFromAllNamespaces: true
+  controlNamespace: gemcloud-logging-system
+  fluentbit:
+    bufferStorage:
+      storage.backlog.mem_limit: 5M 
+      storage.path: /var/log/log-buffer
+    {% if core_plugins.logging.operator.fluentbit.volume_mounts is defined %}
+    extraVolumeMounts:
+    - source: {{ core_plugins.logging.operator.fluentbit.volume_mount.srouce | default('/data') }}
+      destination: {{ core_plugins.logging.operator.fluentbit.volume_mount.destination | default('/data') }}
+      readOnly: true
+    {% endif %}
+    bufferStorageVolume:
+      hostPath:
+        path: /var/log/log-buffer
+    enableUpstream: {{ core_plugins.logging.operator.enable_upstream | default('false') }}
+    filterKubernetes:
+      Use_Kubelet: "false"
+    forwardOptions:
+      Require_ack_response: false
+    image:
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+      - name: {{ global.imagepullsecret | default('kubegems') }}
+      {% endif %}
+      pullPolicy: IfNotPresent
+      repository: {{ global.repository | default('docker.io/kubegems') }}/fluent-bit
+      tag: 1.8.8-largebuf
+    inputTail:
+      Docker_Mode: "false"
+      Mem_Buf_Limit: {{ core_plugins.logging.operator.fluentbit.input.buffer | default('256M') }}
+      {% if runtime == "docker" %}
+      Parser: docker
+      {% else %}
+      Parser: cri
+      {% endif %}
+      Rotate_Wait: "5"
+      Skip_Long_Lines: "true"
+    livenessDefaultCheck: true
+    metrics:
+      interval: 60s
+      path: /api/v1/metrics/prometheus
+      port: 2020
+      prometheusRules: false
+      {% if core_plugins.monitoring.operator.prometheus.enabled is defined and core_plugins.monitoring.operator.prometheus.enabled | default(false) | bool %}
+      serviceMonitor: true
+      {% endif %}
+    network:
+      connectTimeout: 30
+      keepaliveIdleTimeout: 60
+    positiondb:
+      hostPath:
+        path: /var/log/positiondb
+    resources:
+      limits:
+        cpu: {{ core_plugins.logging.operator.fluentbit.resources.cpu | default('1000m') }}
+        memory: {{ core_plugins.logging.operator.fluentbit.resources.memory | default('1Gi') }}
+      requests:
+        cpu: 200m
+        memory: 128Mi
+    security:
+      podSecurityPolicyCreate: true
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          add:
+          - SYS_RESOURCE
+        privileged: true
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+  fluentd:
+    bufferStorageVolume:
+      pvc:
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              {% if core_plugins.logging.operator.fluentd.persistent.size is defined %}
+              storage: {{ core_plugins.logging.operator.fluentd.persistent.size | default('20Gi')}}
+              {% endif %}
+          volumeMode: Filesystem
+          {% if core_plugins.ogging.operator.fluentd.persistent.storageclass is defined %}
+          storageClassName: {{ core_plugins.logging.operator.fluentd.persistent.storageclass }}
+          {% else %}
+          storageClassName: {{ global.storageclass | default('local-path') }}
+          {% endif %}
+    configReloaderImage:
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+      - name: {{ global.imagepullsecret | default('kubegems') }}
+      {% endif %}
+      pullPolicy: IfNotPresent
+      repository: {{ global.repository | default('docker.io/kubegems') }}/configmap-reload
+      tag: v0.4.0
+    fluentOutLogrotate:
+      age: "7"
+      enabled: true
+      path: /fluentd/log/out
+      size: "10485760"
+    ignoreRepeatedLogInterval: 60s
+    ignoreSameLogInterval: 60s
+    image:
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+      - name: {{ global.imagepullsecret | default('kubegems') }}
+      {% endif %}
+      pullPolicy: IfNotPresent
+      repository: {{ global.repository | default('docker.io/kubegems') }}/fluentd
+      tag: v1.13.3-alpine-11.1
+    logLevel: info
+    metrics:
+      interval: 30s
+      path: /metrics
+      port: 24231
+      prometheusRules: false
+      {% if core_plugins.monitoring.operator.prometheus.enabled is defined and core_plugins.monitoring.operator.prometheus.enabled | default(false) | bool %}
+      serviceMonitor: true
+      serviceMonitorConfig:
+        honorLabels: true
+      {% endif %}
+    resources:
+      limits:
+        cpu: {{ core_plugins.logging.operator.fluentd.resources.cpu | default('2000m') }}
+        memory: {{ core_plugins.logging.operator.fluentd.resources.memory | default('4Gi') }}
+      requests:
+        cpu: 200m
+        memory: 1Gi
+    scaling:
+      replicas: {{ core_plugins.logging.operator.fluentd.replicas | default('2') }}
+    security:
+      podSecurityContext:
+        fsGroup: 101
+      podSecurityPolicyCreate: true
+      roleBasedAccessControlCreate: true
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: false
+    workers: 1

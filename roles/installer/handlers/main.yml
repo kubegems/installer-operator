@@ -1,0 +1,37 @@
+---
+# handlers file for Installer
+- name: Scale down KubeGems Service
+  community.kubernetes.k8s_scale:
+    api_version: v1
+    kind: Deployment
+    name: 'gems-service'
+    namespace: gemcloud-system
+    replicas: 0
+    wait: no
+
+- name: Scale up KubeGems Service
+  community.kubernetes.k8s_scale:
+    api_version: v1
+    kind: Deployment
+    name: 'gems-service'
+    namespace: gemcloud-system
+    replicas: 1
+    wait: no
+
+- name: Scale down KubeGems Controller
+  community.kubernetes.k8s_scale:
+    api_version: v1
+    kind: Deployment
+    name: 'gems-controller-manager'
+    namespace: gemcloud-system
+    replicas: 0
+    wait: no
+
+- name: Scale up KubeGems Controller
+  community.kubernetes.k8s_scale:
+    api_version: v1
+    kind: Deployment
+    name: 'gems-controller-manager'
+    namespace: gemcloud-system
+    replicas: 1
+    wait: no

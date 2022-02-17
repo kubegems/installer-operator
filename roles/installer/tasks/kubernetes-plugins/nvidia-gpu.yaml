@@ -1,0 +1,6 @@
+- name: Kubernetes Plugins | Nvidia GPU Device Manager 
+  community.kubernetes.k8s:
+    state: '{{"present" if kubernetes_plugins.nvidia_device_plugin.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - nvidia_device_plugin/daemonset.yaml

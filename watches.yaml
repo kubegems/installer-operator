@@ -1,0 +1,11 @@
+---
+# Use the 'create api' subcommand to add watches to this file.
+- version: v1beta1
+  group: kubegems.io
+  kind: Installer
+  playbook: playbooks/installer.yml
+  reconcilePeriod: 30s
+  manageStatus: true
+  maxRunnerArtifacts: 100
+  snakeCaseParameters: true
+#+kubebuilder:scaffold:watch

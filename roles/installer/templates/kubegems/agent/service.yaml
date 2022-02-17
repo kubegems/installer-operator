@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-agent
+  name: gems-agent
+  namespace: gemcloud-system
+spec:
+  ports:
+    - name: https
+      port: 8040
+      targetPort: 8040
+    - name: http
+      port: 8041
+      targetPort: 8041
+    - name: http-9100
+      protocol: TCP
+      port: 9100
+      targetPort: 9100
+  selector:
+    app.kubernetes.io/name: gems-agent

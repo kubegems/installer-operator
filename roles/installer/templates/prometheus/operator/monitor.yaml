@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-operator
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: prometheus-operator
+spec:
+  endpoints:
+    - port: http
+      honorLabels: true
+      relabelings:
+        - regex: endpoint|service|container|pod|namespace
+          action: labeldrop
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-operator
+  namespaceSelector:
+    matchNames:
+      - gemcloud-monitoring-system

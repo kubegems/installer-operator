@@ -1,0 +1,46 @@
+---
+- name: Core Plugins| Create Namespace Observability
+  when: core_plugins.jaeger.enabled
+  community.kubernetes.k8s:
+    name: observability
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Core Plugins | Observability ElasticSearch 
+  community.kubernetes.k8s:
+    state: '{{ "present" if core_plugins.jaeger.operator.elasticsearch.enabled and core_plugins.jaeger.enabled else "absent" }}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - jaeger/elastic/service.yaml
+    - jaeger/elastic/service-headless.yaml
+    - jaeger/elastic/statefulset.yaml
+    
+- name: Core Plugins | Observability Jaeger | CRDs
+  when: core_plugins.jaeger.enabled is defined
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - jaeger/operator/crds/jaeger.yaml
+
+- name: Core Plugins | Observability Jaeger | Operator
+  when: core_plugins.jaeger.enabled is defined
+  community.kubernetes.k8s:
+    state: '{{ "present" if core_plugins.jaeger.enabled else "absent" }}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - jaeger/operator/sa.yaml
+    - jaeger/operator/role.yaml
+    - jaeger/operator/rolebinding.yaml
+    - jaeger/operator/clusterrole.yaml
+    - jaeger/operator/clusterrolebindings.yaml
+    - jaeger/operator/operator.yaml
+
+- name: Core Plugins | Observability Jaeger 
+  ignore_errors: true
+  community.kubernetes.k8s:
+    state: '{{"present" if core_plugins.jaeger.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - jaeger/jaeger.yaml

@@ -1,0 +1,34 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: containers-console
+  namespace: gemcloud-logging-system
+spec:
+  loki:
+    buffer:
+      flush_interval: 1s
+      flush_mode: interval
+      flush_thread_count: 4
+      tags: time
+      timekey: 1m
+      timekey_wait: 5s
+      total_limit_size: 10G
+    configure_kubernetes_labels: false
+    drop_single_key: true
+    extra_labels:
+      cluster: {{ cluster_name }}
+    extract_kubernetes_labels: true
+    labels:
+      container: $.kubernetes.container_name
+      image: $.kubernetes.container_image
+      namespace: $.kubernetes.namespace_name
+      node: $.kubernetes.host
+      pod: $.kubernetes.pod_name
+      stream: $.stream
+    remove_keys:
+    - logtag
+    - kubernetes
+    - docker
+    - time
+    - throttle_group_key
+    url: http://loki-gateway.gemcloud-logging-system.svc.cluster.local:3100

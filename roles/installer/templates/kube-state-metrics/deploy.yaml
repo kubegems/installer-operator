@@ -1,0 +1,101 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-state-metrics
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: kube-state-metrics
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kube-state-metrics
+  replicas: 1
+  strategy:
+    {}
+  minReadySeconds: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kube-state-metrics
+    spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+      hostNetwork: false
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+        - name: {{ global.imagepullsecret | default('kubegems')}}
+      {% endif %}
+      serviceAccountName: kube-state-metrics
+      affinity:
+        podAffinity:
+
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: kube-state-metrics
+                namespaces:
+                  - "gemcloud-monitoring-system"
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        nodeAffinity:
+
+      containers:
+        - name: kube-state-metrics
+          image: "{{ global.repository | default('docker.io/kubegems')}}/kube-state-metrics:{{ core_plugins.kube_state_metrics.details.version | default('v1.9.8-debian-10-r0')}}"
+          imagePullPolicy: IfNotPresent
+          args:
+            - --collectors=certificatesigningrequests
+            - --collectors=configmaps
+            - --collectors=cronjobs
+            - --collectors=daemonsets
+            - --collectors=deployments
+            - --collectors=endpoints
+            - --collectors=horizontalpodautoscalers
+            - --collectors=ingresses
+            - --collectors=jobs
+            - --collectors=limitranges
+            - --collectors=mutatingwebhookconfigurations
+            - --collectors=namespaces
+            - --collectors=networkpolicies
+            - --collectors=nodes
+            - --collectors=persistentvolumeclaims
+            - --collectors=persistentvolumes
+            - --collectors=poddisruptionbudgets
+            - --collectors=pods
+            - --collectors=replicasets
+            - --collectors=replicationcontrollers
+            - --collectors=resourcequotas
+            - --collectors=secrets
+            - --collectors=services
+            - --collectors=statefulsets
+            - --collectors=storageclasses
+            - --collectors=volumeattachments
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          resources:
+            limits: {}
+            requests: {}

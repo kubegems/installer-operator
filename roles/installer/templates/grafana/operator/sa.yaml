@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: grafana-operator
+  name: grafana-operator
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: grafana-operator
+    app.kubernetes.io/component: operator

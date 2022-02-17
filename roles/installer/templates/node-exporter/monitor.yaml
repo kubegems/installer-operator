@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: node-exporter
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: node-exporter
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: node-exporter
+  namespaceSelector:
+    matchNames:
+      - gemcloud-monitoring-system
+  endpoints:
+    - port: metrics
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_node_name]
+          targetLabel: host
+        # service|container|pod|namespace 都是exporter的，无意义
+        - regex: endpoint|service|container|pod|namespace
+          action: labeldrop

@@ -1,0 +1,43 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-agent-kubectl
+  name: gems-agent-kubectl
+  namespace: gemcloud-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gems-agent-kubectl
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gems-agent-kubectl
+    spec:
+      containers:
+      - image: "{{ global.reposistory |default('docker.io/kubegems') }}/gems-kubectl:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
+        imagePullPolicy: Always
+        name: gems-agent-kubectl
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: timezone
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+      - name: {{ global.imagepullsecret | default('kubegems') }}
+      {% endif %}
+      restartPolicy: Always
+      serviceAccount: gems-agent
+      volumes:
+      - hostPath:
+          path: /etc/localtime
+          type: ""
+        name: timezone

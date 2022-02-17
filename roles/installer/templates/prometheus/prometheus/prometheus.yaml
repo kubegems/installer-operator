@@ -1,0 +1,81 @@
+#jinja2:lstrip_blocks: True
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: gemcloud
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: prometheus-operator
+spec:
+  replicas: {{ core_plugins.monitoring.operator.prometheus.replicas }}
+  serviceAccountName: prometheus
+  serviceMonitorSelector: {}
+  podMonitorSelector: {}
+  probeSelector: {}
+  alerting:
+    alertmanagers:
+    - name: alertmanager
+      namespace: gemcloud-monitoring-system
+      port: http
+  image: {{ global.repository | default('docker.io/kubegems') }}/prometheus:{{ core_plugins.monitoring.operator.prometheus.image.tag | default('2.27.1-debian-10-r16') }}
+  externalUrl: http://prometheus.gemcloud-minitoring-system:9090/
+  externalLabels: 
+    k8s_cloud_cluster: {{ cluster_name }}
+  paused: false
+  logLevel: info
+  logFormat: logfmt
+  listenLocal: false
+  enableAdminAPI: true
+  retention: {{ core_plugins.monitoring.operator.prometheus.retention | default('30d') }}
+  portName: "web"
+  routePrefix: "/"
+  enableFeatures:
+  - remote-write-receiver
+  serviceMonitorNamespaceSelector: {}
+  podMonitorNamespaceSelector: {}
+  probeNamespaceSelector: {}
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        {% if core_plugins.monitoring.operator.prometheus.persistent.storageclass is defined %}
+        storageClassName: {{ core_plugins.monitoring.operator.prometheus.persistent.storageclass }}
+        {% else %}
+        storageClassName: {{ global.storageclass | default('local-path') }}
+        {% endif %}
+        resources:
+          requests:
+            storage: {{ core_plugins.monitoring.operator.prometheus.persistent.size | default('200Gi') }}
+        volumeMode: Filesystem
+  additionalScrapeConfigs:
+    name: additional-scrape-configs
+    key: prometheus-additional.yaml
+  resources:
+    limits:
+      cpu: {{ core_plugins.monitoring.operator.prometheus.resources.cpu | default('4000m')}}
+      memory: {{ core_plugins.monitoring.operator.prometheus.resources.memory | default('8Gi')}}
+    requests:
+      cpu: 200m
+      memory: 128Mi
+  securityContext:
+    runAsUser: 1001
+    fsGroup: 1001
+  ruleNamespaceSelector: {}
+  ruleSelector: 
+    matchLabels:
+      prometheusRule: gemcloud
+  podMetadata:
+    labels:
+      app.kubernetes.io/name: prometheus
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: prometheus
+            namespaces:
+              - "gemcloud-monitoring-system"
+            topologyKey: kubernetes.io/hostname
+          weight: 100

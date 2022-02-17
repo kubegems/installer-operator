@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-kube-scheduler
+  namespace: kube-system
+  labels:
+    kubegems.io/plugins: monitoring
+    app.kubernetes.io/name: kube-scheduler
+spec:
+  selector:
+    component: kube-scheduler
+  ports:
+    - name: https-metrics
+      port: 10259
+      protocol: TCP
+      targetPort: 10259
+  type: ClusterIP

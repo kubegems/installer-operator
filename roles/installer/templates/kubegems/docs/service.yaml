@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-docs
+  name: gems-docs
+  namespace: gemcloud-system
+spec:
+  ports:
+  - name: http-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: gems-docs
+  type: ClusterIP

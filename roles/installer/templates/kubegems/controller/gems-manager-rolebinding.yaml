@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-controller-manager
+    control-plane: controller-manager
+  name: gems-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gems-manager-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: gemcloud-system

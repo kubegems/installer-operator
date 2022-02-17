@@ -1,0 +1,44 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: node-exporter
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: node-exporter
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+    - 'persistentVolumeClaim'
+    - 'hostPath'
+  hostNetwork: true
+  hostIPC: false
+  hostPID: true
+  hostPorts:
+    - min: 0
+      max: 65535
+  runAsUser:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1001
+        max: 1001
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1001
+        max: 1001
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1001
+        max: 1001
+  readOnlyRootFilesystem: false

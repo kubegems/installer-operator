@@ -1,0 +1,158 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheusRule: gemcloud
+  name: gemcloud
+  namespace: gemcloud-logging-system
+spec:
+  groups:
+  - name: FluentbitTooManyErrors
+    rules:
+    - alert: FluentbitTooManyErrors
+      annotations:
+        description: Fluentbit ({{ $labels.instance }}) is erroring.
+        summary: Fluentbit too many errors.
+      expr: rate(fluentbit_output_retries_failed_total{job="gems-logging-fluentbit",
+        namespace="gemcloud-logging-system"}[10m]) > 0
+      for: 10m
+      labels:
+        gems_alert_scope: system-admin
+        gems_alertname: FluentbitTooManyErrors
+        gems_namespace: gemcloud-logging-system
+        severity: warning
+  - name: FluentdNodeDown
+    rules:
+    - alert: FluentdNodeDown
+      annotations:
+        description: Prometheus could not scrape {{ "{{ $labels.job }}" }} for more
+          than 30 minutes
+        summary: fluentd cannot be scraped
+      expr: up{job="gems-logging-fluentd-metrics", namespace="gemcloud-logging-system"}
+        == 0
+      for: 10m
+      labels:
+        gems_alert_scope: system-admin
+        gems_alertname: FluentdNodeDown
+        gems_namespace: gemcloud-logging-system
+        severity: critical
+  - name: FluentdQueueLength
+    rules:
+    - alert: FluentdQueueLength
+      annotations:
+        description: In the last 5 minutes, fluentd queues increased 30%. Current
+          value is {{ "{{ $value }}" }}
+        summary: fluentd node are failing
+      expr: rate(fluentd_status_buffer_queue_length{job="gems-logging-fluentd-metrics",
+        namespace="gemcloud-logging-system"}[5m]) > 0.3
+      for: 1m
+      labels:
+        gems_alert_scope: system-admin
+        gems_alertname: FluentdQueueLength
+        gems_namespace: gemcloud-logging-system
+        severity: warning
+    - alert: FluentdQueueLength
+      annotations:
+        description: In the last 5 minutes, fluentd queues increased 50%. Current
+          value is {{ "{{ $value }}" }}
+        summary: fluentd nodes buffer queue length are critical
+      expr: rate(fluentd_status_buffer_queue_length{job="gems-logging-fluentd-metrics",
+        namespace="gemcloud-logging-system"}[5m]) > 0.5
+      for: 1m
+      labels:
+        gems_alert_scope: system-admin
+        gems_alertname: FluentdQueueLength
+        gems_namespace: gemcloud-logging-system
+        severity: critical
+  - name: FluentdRecordsCountsHigh
+    rules:
+    - alert: FluentdRecordsCountsHigh
+      annotations:
+        description: In the last 5m, records counts increased 3 times, comparing to
+          the latest 15 min.
+        summary: fluentd records count are critical
+      expr: sum(rate(fluentd_output_status_emit_records{job="gems-logging-fluentd-metrics",
+        namespace="gemcloud-logging-system"}[5m])) by (job,pod,namespace) > (3 * sum(rate(fluentd_output_status_emit_records{job="gems-logging-fluentd-metrics",
+        namespace="gemcloud-logging-system"}[15m])) by (job,pod,namespace))
+      for: 1m
+      labels:
+        gems_alert_scope: system-admin
+        gems_alertname: FluentdRecordsCountsHigh
+        gems_namespace: gemcloud-logging-system
+        severity: critical
+  - name: FluentdRetry
+    rules:
+    - alert: FluentdRetry
+      annotations:
+        description: Fluentd retry count has been  {{ "{{ $value }}" }} for the last
+          10 minutes
+        summary: Fluentd retry count has been  {{ "{{ $value }}" }} for the last 10
+          minutes
+      expr: increase(fluentd_status_retry_count{job="gems-logging-fluentd-metrics",
+        namespace="gemcloud-logging-system"}[10m]) > 0
+      for: 20m
+      labels:
+        gems_alert_scope: system-admin
+        gems_alertname: FluentdRetry
+        gems_namespace: gemcloud-logging-system
+        severity: warning
+  - name: FluentdOutputError
+    rules:
+    - alert: FluentdOutputError
+      annotations:
+        description: Fluentd output error count is {{ "{{ $value }}" }} for the last
+          10 minutes
+        summary: There have been Fluentd output error(s) for the last 10 minutes
+      expr: increase(fluentd_output_status_num_errors{job="gems-logging-fluentd-metrics",
+        namespace="gemcloud-logging-system"}[10m]) > 0
+      for: 1s
+      labels:
+        gems_alert_scope: system-admin
+        gems_alertname: FluentdOutputError
+        gems_namespace: gemcloud-logging-system
+        severity: warning
+  - name: FluentdBufferSize
+    rules:
+    - alert: FluentdBufferSize
+      annotations:
+        description: 'Fluentd buffer size capacity is {{ "{{ $value }}" }}% '
+        summary: Fluentd buffer free capacity less than 10%.
+      expr: node_filesystem_avail_bytes{mountpoint="/buffers", job="gems-logging-fluentd-metrics",
+        namespace="gemcloud-logging-system"} / node_filesystem_size_bytes{mountpoint="/buffers",
+        job="gems-logging-fluentd-metrics", namespace="gemcloud-logging-system"} *
+        100 < 10
+      for: 10m
+      labels:
+        gems_alert_scope: system-admin
+        gems_alertname: FluentdBufferSize
+        gems_namespace: gemcloud-logging-system
+        severity: warning
+    - alert: FluentdBufferSize
+      annotations:
+        description: 'Fluentd buffer size capacity is {{ "{{ $value }}" }}% '
+        summary: Fluentd buffer free capacity less than 5%
+      expr: node_filesystem_avail_bytes{mountpoint="/buffers", job="gems-logging-fluentd-metrics",
+        namespace="gemcloud-logging-system"} / node_filesystem_size_bytes{mountpoint="/buffers",
+        job="gems-logging-fluentd-metrics", namespace="gemcloud-logging-system"} *
+        100 < 5
+      for: 10m
+      labels:
+        gems_alert_scope: system-admin
+        gems_alertname: FluentdBufferSize
+        gems_namespace: gemcloud-logging-system
+        severity: critical
+  - name: FluentdPredictedBufferGrowth
+    rules:
+    - alert: FluentdPredictedBufferGrowth
+      annotations:
+        description: Fluentd buffer trending watcher
+        summary: Fluentd buffer size prediction warning
+      expr: predict_linear(fluentd_output_status_buffer_total_bytes{job="gems-logging-fluentd-metrics",
+        namespace="gemcloud-logging-system"}[10m], 600) > fluentd_output_status_buffer_total_bytes{job="gems-logging-fluentd-metrics",
+        namespace="gemcloud-logging-system"}
+      for: 10m
+      labels:
+        gems_alert_scope: system-admin
+        gems_alertname: FluentdPredictedBufferGrowth
+        gems_namespace: gemcloud-logging-system
+        severity: warning

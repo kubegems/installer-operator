@@ -1,0 +1,13 @@
+#jinja2:lstrip_blocks: True
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Flow
+metadata:
+  name: kubegems-event
+  namespace: gemcloud-logging-system
+spec:
+  globalOutputRefs:
+  - containers-console
+  match:
+  - select:
+      labels:
+        app.kubernetes.io/name: gems-eventer

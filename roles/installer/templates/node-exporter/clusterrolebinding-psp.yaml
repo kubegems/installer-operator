@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gems-node-exporter-psp
+  labels:
+    app.kubernetes.io/name: node-exporter
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gems-node-exporter-psp
+subjects:
+  - kind: ServiceAccount
+    name: node-exporter
+    namespace: gemcloud-monitoring-system
