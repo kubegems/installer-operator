@@ -7,7 +7,7 @@ metadata:
   namespace: gemcloud-logging-system
 subsets:
 - addresses:
-  - ip: {{ core_plugins.loki.status.host.split(":")[0] | lower }}
+  - ip: {{ core_plugins.logging.operator.loki.host.split(":")[0] | lower }}
   ports:
-  - port: {{ core_plugins.loki.status.host.split(":")[1] | int }}
+  - port: {{ core_plugins.logging.operator.loki.host.split(":")[1] | int }}
     protocol: TCP

@@ -291,7 +291,7 @@ spec:
         - name: ENABLED_KUBEGEMS_DOCS
           value: "off"
         - name: RUNNING_MODE 
-          value: "server"
+          value: "centrol"
         - name: LOCATION
           value: "inside"
         image: kubegems/installer-operator:v2.3
@@ -336,53 +336,43 @@ spec:
 
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: installer-operator
+  name: kubegems-config-v2.3
+  namespace: kubegems-installer
 data:
   config.yaml: |-
-    # 系统相关
-    system:
-      # jwt过期时间（单位小时）
-      jwtExpire: 24h
-
-    # redis 配置
-    redis:
-      password: "gems-redis-password"
-      addr: gems-redis:6379
-      db: 0
-
-    # gitea 配置
-    git:
-      host: http://gems-gitea:3000
-      username: root
-      password: Cloudminds1688
-
-    # argo配置
-    argo:
-      addr: http://argocd-server.gemcloud-workflow-system
-      username: admin
-      password: Cloudminds1688
-
-    # mysql 配置
-    mysql:
-      initdata: false
-      addr: gems-mysql:3306
-      username: root
-      password: GhghVoeafevku
-      db: gemcloud
-      options:
-        charset: utf8mb4_general_ci
-        parseTime: "True"
-        collation: utf8mb4_general_ci
-        loc: Local
-
-    # 应用商店 配置
-    appstore:
-      chartRepoUrl: http://gems-chartmuseum:8030
-      chartsTmp: chartstmp
-
-    # 审计开关
-    audit:
-      status: "on"
-
-    # 集群安装配置
-    installer:
-      version: v2.3
+    #system:
+    #  jwtExpire: 24h
+    #redis:
+    #  password: "gems-redis-password"
+    #  addr: gems-redis:6379
+    #  db: 0
+    #git:
+    #  host: http://gems-gitea:3000
+    #  username: root
+    #  password: Cloudminds1688
+    #argo:
+    #  addr: http://argocd-server.gemcloud-workflow-system
+    #  username: admin
+    #  password: Cloudminds1688
+    #mysql:
+    #  initdata: false
+    #  addr: gems-mysql:3306
+    #  username: root
+    #  password: GhghVoeafevku
+    #  db: gemcloud
+    #  options:
+    #    charset: utf8mb4_general_ci
+    #    parseTime: "True"
+    #    collation: utf8mb4_general_ci
+    #    loc: Local
+    #appstore:
+    #  chartRepoUrl: http://gems-chartmuseum:8030
+    #  chartsTmp: chartstmp
+    #audit:
+    #  status: "on"
+    #installer:
+    #  version: v2.3
