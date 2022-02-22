@@ -2,14 +2,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.5.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
-  labels:
-    app.kubernetes.io/name: gems-controller-manager
-    control-plane: controller-manager
-  name: tenantgateways.kubegems.io
+  name: tenantgateways.gems.kubegems.io
 spec:
-  group: kubegems.io
+  group: gems.kubegems.io
   names:
     kind: TenantGateway
     listKind: TenantGatewayList
@@ -17,7 +14,6 @@ spec:
     shortNames:
     - tgw
     singular: tenantgateway
-  preserveUnknownFields: false
   scope: Cluster
   versions:
   - name: v1beta1
@@ -52,11 +48,10 @@ spec:
                 nullable: true
                 type: object
               ingressClass:
-                description: "IngressClass \u7528\u4EE5\u533A\u5206nginx\u4F5C\u7528\
-                  \u57DF"
+                description: IngressClass 用以区分nginx作用域
                 type: string
               replicas:
-                description: "Replicas \u8D1F\u8F7D\u5747\u8861\u5B9E\u4F8B\u6570"
+                description: Replicas 负载均衡实例数
                 format: int32
                 type: integer
               service:
@@ -70,10 +65,10 @@ spec:
                     type: object
                 type: object
               tenant:
-                description: "Tenant \u79DF\u6237\u540D"
+                description: Tenant 租户名
                 type: string
               type:
-                description: "Type \u8D1F\u8F7D\u5747\u8861\u7C7B\u578B"
+                description: Type 负载均衡类型
                 type: string
               workload:
                 description: The Workload of the Ingress controller.
@@ -97,7 +92,7 @@ spec:
                           pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                           x-kubernetes-int-or-string: true
                         description: 'Limits describes the maximum amount of compute
-                          resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+                          resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                         type: object
                       requests:
                         additionalProperties:
@@ -109,7 +104,7 @@ spec:
                         description: 'Requests describes the minimum amount of compute
                           resources required. If Requests is omitted for a container,
                           it defaults to Limits if that is explicitly specified, otherwise
-                          to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+                          to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                         type: object
                     type: object
                 type: object
@@ -123,12 +118,11 @@ spec:
             description: TenantGatewayStatus defines the observed state of TenantGateway
             properties:
               availableReplicas:
-                description: "ActAvailableReplicasive nginx deployment \u6B63\u5E38\
-                  \u7684pod\u6570"
+                description: ActAvailableReplicasive nginx deployment 正常的pod数
                 format: int32
                 type: integer
               ports:
-                description: "NodePort nginx service \u5360\u7528\u7684ports"
+                description: NodePort nginx service 占用的ports
                 items:
                   description: ServicePort contains information on service's port.
                   properties:
@@ -197,7 +191,7 @@ spec:
       status: {}
 status:
   acceptedNames:
-    kind: ''
-    plural: ''
+    kind: ""
+    plural: ""
   conditions: []
   storedVersions: []

@@ -1,5 +1,5 @@
 ---
-- name: Create the plugins.kubegems.io/v1alpha1.Installer
+- name: Create the gems.kubegems.io/v1beta1.Installer
   k8s:
     state: present
     namespace: '{{ namespace }}'
@@ -11,7 +11,7 @@
       reason: Successful
       status: "True"
   vars:
-    cr_file: 'plugins_v1alpha1_installer.yaml'
+    cr_file: 'gems_v1beta1_installer.yaml'
 
 - name: Add assertions here
   assert:

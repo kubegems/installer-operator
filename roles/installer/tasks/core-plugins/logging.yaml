@@ -30,6 +30,13 @@
     - logging-operator/flows.yaml
     - logging-operator/clusteroutputs.yaml
 
+- name: Core Plugins | Loki Recording Rules Configuration
+  community.kubernetes.k8s:
+    state: '{{"present" if core_plugins.logging.operator.loki.enabled else "absent"}}'
+    definition: "{{ lookup('file', item) | from_yaml }}"
+  with_items:
+    - loki-stack/recording_rules.yaml
+
 - name: Core Plugins | Loki Stack
   community.kubernetes.k8s:
     state: '{{"present" if core_plugins.logging.operator.loki.enabled else "absent"}}'

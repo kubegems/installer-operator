@@ -2,14 +2,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.5.0
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
-  labels:
-    app.kubernetes.io/name: gems-controller-manager
-    control-plane: controller-manager
-  name: tenants.kubegems.io
+  name: tenants.gems.kubegems.io
 spec:
-  group: kubegems.io
+  group: gems.kubegems.io
   names:
     kind: Tenant
     listKind: TenantList
@@ -17,7 +14,6 @@ spec:
     shortNames:
     - ten
     singular: tenant
-  preserveUnknownFields: false
   scope: Cluster
   versions:
   - name: v1beta1
@@ -41,17 +37,17 @@ spec:
             description: TenantSpec defines the desired state of Tenant
             properties:
               admin:
-                description: "Admin \u79DF\u6237\u7BA1\u7406\u5458\u5217\u8868"
+                description: Admin 租户管理员列表
                 items:
                   type: string
                 type: array
               members:
-                description: "Members \u79DF\u6237\u6210\u5458\u5217\u8868"
+                description: Members 租户成员列表
                 items:
                   type: string
                 type: array
               tenantName:
-                description: "TenantName \u79DF\u6237\u540D\u5B57"
+                description: TenantName 租户名字
                 type: string
             required:
             - admin
@@ -60,18 +56,16 @@ spec:
             description: TenantStatus defines the observed state of Tenant
             properties:
               environments:
-                description: "Environments \u79DF\u6237\u5728\u672C\u96C6\u7FA4\u7BA1\
-                  \u63A7\u7684\u73AF\u5883"
+                description: Environments 租户在本集群管控的环境
                 items:
                   type: string
                 type: array
               lastUpdateTime:
-                description: "LastUpdateTime \u6700\u540E\u66F4\u65B0\u65F6\u95F4"
+                description: LastUpdateTime 最后更新时间
                 format: date-time
                 type: string
               namespaces:
-                description: "Namespaces \u79DF\u6237\u5728\u672C\u96C6\u7FA4\u7BA1\
-                  \u63A7\u7684namespace"
+                description: Namespaces 租户在本集群管控的namespace
                 items:
                   type: string
                 type: array
@@ -83,7 +77,7 @@ spec:
       status: {}
 status:
   acceptedNames:
-    kind: ''
-    plural: ''
+    kind: ""
+    plural: ""
   conditions: []
   storedVersions: []

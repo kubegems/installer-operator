@@ -6,10 +6,10 @@
     - kubegems/mysql/pvc.yaml
     - kubegems/mysql/deploy.yaml
     - kubegems/mysql/service.yaml
-    - kubegems/minio/secret.yaml
-    - kubegems/minio/pvc.yaml
-    - kubegems/minio/deployment.yaml
-    - kubegems/minio/service.yaml
+    #- kubegems/minio/secret.yaml
+    #- kubegems/minio/pvc.yaml
+    #- kubegems/minio/deployment.yaml
+    #- kubegems/minio/service.yaml
     - kubegems/redis/configmap.yaml
     - kubegems/redis/deploy.yaml
     - kubegems/redis/service.yaml
@@ -18,6 +18,7 @@
     - kubegems/gitea/secret.init.yaml
     - kubegems/gitea/deploy.yaml
     - kubegems/gitea/service.yaml
+    - kubegems/chartmuseum/pvc.yaml
     - kubegems/chartmuseum/deploy.yaml
     - kubegems/chartmuseum/service.yaml
     - kubegems/service/issuer.yaml

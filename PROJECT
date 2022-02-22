@@ -4,13 +4,13 @@ layout:
 plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
-projectName: plugins
+projectName: installer
 resources:
 - api:
     crdVersion: v1
     namespaced: true
   domain: kubegems.io
-  group: plugins
+  group: gems
   kind: Installer
-  version: v1alpha1
+  version: v1beta1
 version: "3"

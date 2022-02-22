@@ -1,0 +1,4 @@
+## Append samples you want in your CSV to this file as resources ##
+resources:
+- gems_v1beta1_installer.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples

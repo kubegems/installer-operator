@@ -9,77 +9,77 @@
 #  when: kubernetes_plugins.flannel is defined
 
 #-- Kubegems storage configuration, this is not necessary.
-- include_tasks: core-plugins/local-path.yaml
-
-# -- Cert manager is required.
-- include_tasks: core-plugins/cert_manager.yaml
-
-# --KubeGems centrol service, it can be deployed without kubernetes cluster.
-- include_tasks: core-plugins/kubegems-centrol.yaml
-  when: mode == "centrol" and locations == "inside"
-
-# -- KubeGems gitops engine, powered by argocd.
-- include_tasks: core-plugins/argocd.yaml
-  when: mode == "centrol"
-
-# -- KubeGems agent service, it must be deployed in the kubernetes cluster.
-- include_tasks: core-plugins/kubegems-local.yaml
-
-# -- Monitoring include Prometheus Operator, prometheus and alertmanager will be installed.
-- include_tasks: core-plugins/monitoring.yaml
-  when: core_plugins.monitoring is defined
-
-# -- Logging Service, include Logging Operator、Loki Stack、
-- include_tasks: core-plugins/logging.yaml
-  when: core_plugins.logging is defined
-
-# -- Kubernetes event exporter, this requires by logging service.
-- include_tasks: core-plugins/eventer.yaml
-  when: core_plugins.logging is defined and core_plugins.eventer is defined
-
-# -- Node exporter is not necessary.
-- include_tasks: core-plugins/node-exporter.yaml
-  when: core_plugins.node_exporter is defined 
-
-# -- Kube state metrics is not necessary.
-- include_tasks: core-plugins/kube-state-metrics.yaml
-  when: core_plugins.kube_state_metrics is defined 
-
-# -- OpenTracing powerd by jaeger.
-- include_tasks: core-plugins/jaeger.yaml
-  when: core_plugins.jaeger is defined 
-
-# -- ServiceMesh powerd by istio.
-- include_tasks: core-plugins/istio.yaml
-  when: core_plugins.istio is defined
-
-# -- Kubernetes metrics server is not necessary.
-#- include_tasks: kubernetes-plugins/metrics-server.yaml
-#  when: kubernetes_plugins.metrics_server is defined 
-
-# -- NodeProblemDetector is not necessary.
-- include_tasks: kubernetes-plugins/npd.yaml
-  when: kubernetes_plugins.node_problem_detector is defined 
-
-# -- NodeDnsCache is not necessary.
-- include_tasks: kubernetes-plugins/dns-cache.yaml
-  when: kubernetes_plugins.node_local_dns is defined 
-
-# -- Grafana is not necessary.
-#- include_tasks: kubernetes-plugins/grafana.yaml
-#  when: kubernetes_plugins.grafana is defined
-  
-# -- Nvidia GPU Plugin for kubenretes. this is not necessary.
-# Tips: After this plugin is installed, this service will not really activity, 
-# you need to enable this plugin on KubeGems, which in Admin site of nodes management.
-- include_tasks: kubernetes-plugins/nvidia-gpu.yaml
-  when: kubernetes_plugins.nvidia_device_plugin is defined
-
-# -- An Opensource GPU resource virtualization plugin by TKE Stack, this is not necessary.
-# Tips: After this plugin is installed, this service will not really activity, 
-# you need to enable this plugin on KubeGems, which in Admin site of nodes management.
-- include_tasks: kubernetes-plugins/gpu-manager.yaml
-  when: kubernetes_plugins.gpu_manager is defined
-
+#- include_tasks: core-plugins/local-path.yaml
+#
+## -- Cert manager is required.
+#- include_tasks: core-plugins/cert_manager.yaml
+#
+## --KubeGems centrol service, it can be deployed without kubernetes cluster.
+#- include_tasks: core-plugins/kubegems-centrol.yaml
+#  when: mode == "centrol" and locations == "inside"
+#
+## -- KubeGems gitops engine, powered by argocd.
+#- include_tasks: core-plugins/argocd.yaml
+#  when: mode == "centrol"
+#
+## -- KubeGems agent service, it must be deployed in the kubernetes cluster.
+#- include_tasks: core-plugins/kubegems-local.yaml
+#
+## -- Monitoring include Prometheus Operator, prometheus and alertmanager will be installed.
+#- include_tasks: core-plugins/monitoring.yaml
+#  when: core_plugins.monitoring is defined
+#
+## -- Logging Service, include Logging Operator、Loki Stack、
+#- include_tasks: core-plugins/logging.yaml
+#  when: core_plugins.logging is defined
+#
+## -- Kubernetes event exporter, this requires by logging service.
+#- include_tasks: core-plugins/eventer.yaml
+#  when: core_plugins.logging is defined and core_plugins.eventer is defined
+#
+## -- Node exporter is not necessary.
+#- include_tasks: core-plugins/node-exporter.yaml
+#  when: core_plugins.node_exporter is defined 
+#
+## -- Kube state metrics is not necessary.
+#- include_tasks: core-plugins/kube-state-metrics.yaml
+#  when: core_plugins.kube_state_metrics is defined 
+#
+## -- OpenTracing powerd by jaeger.
+#- include_tasks: core-plugins/jaeger.yaml
+#  when: core_plugins.jaeger is defined 
+#
+## -- ServiceMesh powerd by istio.
+#- include_tasks: core-plugins/istio.yaml
+#  when: core_plugins.istio is defined
+#
+## -- Kubernetes metrics server is not necessary.
+##- include_tasks: kubernetes-plugins/metrics-server.yaml
+##  when: kubernetes_plugins.metrics_server is defined 
+#
+## -- NodeProblemDetector is not necessary.
+#- include_tasks: kubernetes-plugins/npd.yaml
+#  when: kubernetes_plugins.node_problem_detector is defined 
+#
+## -- NodeDnsCache is not necessary.
+#- include_tasks: kubernetes-plugins/dns-cache.yaml
+#  when: kubernetes_plugins.node_local_dns is defined 
+#
+## -- Grafana is not necessary.
+##- include_tasks: kubernetes-plugins/grafana.yaml
+##  when: kubernetes_plugins.grafana is defined
+#  
+## -- Nvidia GPU Plugin for kubenretes. this is not necessary.
+## Tips: After this plugin is installed, this service will not really activity, 
+## you need to enable this plugin on KubeGems, which in Admin site of nodes management.
+#- include_tasks: kubernetes-plugins/nvidia-gpu.yaml
+#  when: kubernetes_plugins.nvidia_device_plugin is defined
+#
+## -- An Opensource GPU resource virtualization plugin by TKE Stack, this is not necessary.
+## Tips: After this plugin is installed, this service will not really activity, 
+## you need to enable this plugin on KubeGems, which in Admin site of nodes management.
+#- include_tasks: kubernetes-plugins/gpu-manager.yaml
+#  when: kubernetes_plugins.gpu_manager is defined
+#
 # -- Some poststart jobs.
 - include_tasks: poststart.yaml

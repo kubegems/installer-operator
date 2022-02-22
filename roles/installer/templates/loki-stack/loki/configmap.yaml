@@ -106,9 +106,13 @@ data:
       storage:
         type: local
         local:
-          directory: /data/rules
-      rule_path: /data/scratch
+          directory: /rules
+      rule_path: /rules/scratch
       alertmanager_url: http://alertmanager.gemcloud-monitoring-system.svc.cluster.local:9093
+      remote_write:
+        enabled: true
+        client:
+          url: http://prometheus.gemcloud-monitoring-system.svc.cluster.local:9090/api/v1/write
       ring:
         kvstore:
           store: inmemory

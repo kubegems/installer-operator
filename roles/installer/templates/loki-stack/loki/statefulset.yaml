@@ -43,7 +43,6 @@ spec:
           - -c
           - |
             set -x
-            mkdir -p /data/rules/fake
             mkdir -p /data/scratch
             mkdir -p /data/wal
         volumeMounts:
@@ -76,6 +75,9 @@ spec:
         - name: loki-config
           mountPath: /etc/loki/
           readOnly: true
+        - name: rules
+          mountPath: /rules/fake/
+          readOnly: true
         - name: data
           mountPath: /data
         - mountPath: /etc/localtime
@@ -104,6 +106,9 @@ spec:
       - name: loki-config
         configMap:
           name: loki-local-config
+      - name: rules
+        configMap:
+          name: loki-recording-rules
       - hostPath:
           path: /etc/localtime
         name: timezone

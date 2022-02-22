@@ -1,0 +1,7 @@
+apiVersion: gems.kubegems.io/v1beta1
+kind: Installer
+metadata:
+  name: installer-sample
+spec:
+  # Add fields here
+  foo: bar

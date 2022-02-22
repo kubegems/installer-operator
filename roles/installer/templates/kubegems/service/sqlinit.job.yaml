@@ -1,3 +1,4 @@
+#jinja2:lstrip_blocks: True
 apiVersion: batch/v1
 kind: Job
 metadata:
