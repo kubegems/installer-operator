@@ -35,8 +35,7 @@ spec:
       containers:
       - args:
         - controller
-        - --metrics-addr=127.0.0.1:8080
-        - --enable-leader-election
+        - --enableleaderelection
         command:
         - /manager
         image: "{{ global.repository | default('docker.io')}}/kubegems:{{ core_plugins.kubegems_local.details.version | default('latest')}}"

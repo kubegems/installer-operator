@@ -7,9 +7,6 @@ metadata:
   namespace: gemcloud-system
 spec:
   ports:
-    - name: https
-      port: 8040
-      targetPort: 8040
     - name: http
       port: 8041
       targetPort: 8041

@@ -25,34 +25,24 @@ spec:
         - name: gems-agent
           image: "{{ global.repository | default('docker.io')}}/kubegems:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
           imagePullPolicy: IfNotPresent
-          args: ["agent"]
+          args: 
+          - agent
+          - --syetem-cafile=/certs/ca.crt
+          - --syetem-certfile=/certs/tls.crt
+          - --syetem-keyfile=/certs/tls.key
           env:
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: MY_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: DEBUGOPTIONS-MYCONTAINER
-              value: "gems-agent-kubectl"
-            - name: "DEBUG"
-              {% if core_plugins.kubegems_local.operator.gems_agent.debug is defined and core_plugins.kubegems_local.operator.gems_agent.debug %}
-              value: "true"
-              {% else %}
-              value: "false"
-              {% endif %}
-            - name: "LOGLEVEL"
-              value: "info"
-            - name: "EXPORTER_LISTEN"
-              value: ":9100"
-            - name: "EXPORTER_METRICPATH"
-              value: "/metrics"
-            - name: "EXPORTER_INCLUDEEXPORTERMETRICS"
-              value: "false"
-            - name: "EXPORTER_MAXREQUESTS"
-              value: "40"
+          - name: MY_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: "DEBUG"
+            {% if core_plugins.kubegems_local.operator.gems_agent.debug is defined and core_plugins.kubegems_local.operator.gems_agent.debug %}
+            value: "true"
+            {% else %}
+            value: "false"
+            {% endif %}
+          - name: "LOGLEVEL"
+            value: "info"
           resources:
             requests:
               cpu: 100m
@@ -64,15 +54,13 @@ spec:
             tcpSocket:
               port: 8041
           ports:
-            - containerPort: 8040
-              name: https-8040
             - containerPort: 8041
               name: http-8041
             - containerPort: 9100
               name: http-9100
           volumeMounts:
             - name: cert
-              mountPath: /serv/certs
+              mountPath: /certs
             - mountPath: /etc/localtime
               name: timezone
       volumes:

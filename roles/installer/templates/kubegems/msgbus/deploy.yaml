@@ -37,8 +37,13 @@ spec:
         imagePullPolicy: IfNotPresent
         args:
         - msgbus
-        - run
+        - --jwt-jwtcert=/certs/jwt/tls.crt
+        - --jwt-jwtkey=/certs/jwt/tls.key
         - --system-listen=:8080
+        envFrom:
+        - secretRef:
+            optional: true
+            name: gems-env
         livenessProbe:
           failureThreshold: 3
           initialDelaySeconds: 5
@@ -67,9 +72,7 @@ spec:
             cpu: 100m
             memory: 200Mi
         volumeMounts:
-        - mountPath: /serv/config
-          name: gems-service-config
-        - mountPath: /serv/certs/jwt
+        - mountPath: /certs/jwt
           name: gems-jwt-certs
         - mountPath: /etc/localtime
           name: timezone
@@ -79,9 +82,6 @@ spec:
       {% endif %}
       restartPolicy: Always
       volumes:
-      - configMap:
-          name: gems-service-config
-        name: gems-service-config
       - name: gems-jwt-certs
         secret:
           secretName: gems-service-certs-secret
