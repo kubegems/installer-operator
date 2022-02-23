@@ -19,7 +19,7 @@ webhooks:
   name: mutate.resourcequota.dev
   rules:
   - apiGroups:
-    - kubegems.io
+    - gems.kubegems.io
     apiVersions:
     - v1beta1
     operations:
@@ -39,7 +39,7 @@ webhooks:
   name: mutate.environment.dev
   rules:
   - apiGroups:
-    - kubegems.io
+    - gems.kubegems.io
     apiVersions:
     - v1beta1
     operations:
@@ -59,7 +59,7 @@ webhooks:
   name: mutate.gateway.dev
   rules:
   - apiGroups:
-    - kubegems.io
+    - gems.kubegems.io
     apiVersions:
     - v1beta1
     operations:
@@ -99,7 +99,7 @@ webhooks:
   name: mutate.label-injector.dev
   rules:
   - apiGroups:
-    - ''
+    - ""
     apiVersions:
     - '*'
     operations:
