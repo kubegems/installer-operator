@@ -35,10 +35,12 @@ spec:
         args:
         - service
         - migrate
-        - --mysql-initdata=true
+        - --initdata=true
+        envFrom:
+        - secretRef:
+            optional: true
+            name: gems-env
         volumeMounts:
-        - mountPath: /serv/config/
-          name: gems-service-config
         - mountPath: /serv/certs/jwt
           name: gems-jwt-certs
       dnsPolicy: ClusterFirst
@@ -48,9 +50,6 @@ spec:
       {% endif %}
       restartPolicy: OnFailure
       volumes:
-      - configMap:
-          name: gems-service-config
-        name: gems-service-config
       - name: gems-jwt-certs
         secret:
           secretName: gems-service-certs-secret

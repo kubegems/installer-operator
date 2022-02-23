@@ -25,6 +25,7 @@
     - kubegems/service/certification.yaml
     - kubegems/service/deploy.yaml
     - kubegems/service/service.yaml
+    - kubegems/service/secret.yaml
 
 - name: Core Plugins | Lookup kubeGems Service Config
   set_fact:
