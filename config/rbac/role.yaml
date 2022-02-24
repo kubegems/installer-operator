@@ -38,10 +38,10 @@ rules:
       - update
       - watch
   ##
-  ## Rules for gems.kubegems.io/v1beta1, Kind: Installer
+  ## Rules for plugins.kubegems.io/v1beta1, Kind: Installer
   ##
   - apiGroups:
-      - gems.kubegems.io
+      - plugins.kubegems.io
     resources:
       - installers
       - installers/status

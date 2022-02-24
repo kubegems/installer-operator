@@ -1,4 +1,4 @@
-apiVersion: gems.kubegems.io/v1beta1
+apiVersion: plugins.kubegems.io/v1beta1
 kind: Installer
 metadata:
   name: installer-sample
