@@ -40,10 +40,27 @@ spec:
         - --jwt-jwtcert=/certs/jwt/tls.crt
         - --jwt-jwtkey=/certs/jwt/tls.key
         - --system-listen=:8080
-        envFrom:
-        - secretRef:
-            optional: true
-            name: gems-env
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mysql-root-password
+              name: gems-secret
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-password
+              name: gems-secret
+        - name: GIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: gitea-root-password
+              name: gems-secret
+        - name: ARGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: argo-admin-password
+              name: gems-secret
         livenessProbe:
           failureThreshold: 3
           initialDelaySeconds: 5

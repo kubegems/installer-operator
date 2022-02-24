@@ -36,11 +36,27 @@ spec:
         imagePullPolicy: IfNotPresent
         args: 
         - worker
-        envFrom:
-        - secretRef:
-            optional: true
-            name: gems-env
         env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mysql-root-password
+              name: gems-secret
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-password
+              name: gems-secret
+        - name: GIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: gitea-root-password
+              name: gems-secret
+        - name: ARGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: argo-admin-password
+              name: gems-secret
         - name: DEBUG
           {% if core_plugins.kubegems_centrol.operator.gems_worker.debug is defined and core_plugins.kubegems_centrol.operator.gems_worker.debug %}
           value: "true"

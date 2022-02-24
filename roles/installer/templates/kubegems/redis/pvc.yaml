@@ -1,0 +1,19 @@
+#jinja2:lstrip_blocks: True
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-redis
+  name: gems-redis-data
+  namespace: gemcloud-system
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ core_plugins.kubegems_centrol.operator.gems_redis.persistent.size | default('10Gi')}}
+  {% if core_plugins.kubegems_centrol.operator.gems_redis.persistent.storageclass is defined %} 
+  storageClassName: {{ core_plugins.kubegems_centrol.operator.gems_redis.persistent.storageclass }}
+  {% else %}
+  storageClassName: {{ global.storageclass | default('local-path') }}
+  {% endif %}

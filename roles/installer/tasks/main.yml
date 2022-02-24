@@ -10,11 +10,11 @@
 
 #-- Kubegems storage configuration, this is not necessary.
 - include_tasks: core-plugins/local-path.yaml
-
-# -- Cert manager is required.
+#
+## -- Cert manager is required.
 - include_tasks: core-plugins/cert_manager.yaml
-
-# -- KubeGems agent service, it must be deployed in the kubernetes cluster.
+#
+## -- KubeGems agent service, it must be deployed in the kubernetes cluster.
 - include_tasks: core-plugins/kubegems-local.yaml
 
 # --KubeGems centrol service, it can be deployed without kubernetes cluster.

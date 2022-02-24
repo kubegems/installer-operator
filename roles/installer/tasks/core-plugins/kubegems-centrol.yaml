@@ -1,3 +1,19 @@
+- name: Core Plugins | Get Secrets from Kubernetes
+  community.kubernetes.k8s_info:
+    api_version: "v1"
+    kind: Secret
+    name: gems-secret
+    namespace: gemcloud-system
+  register: gems_secret
+
+- name: Core Plugins | Generate Password if secret is not password
+  when: (gems_secret.resources | length == 0)
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - kubegems/password.secret.yaml
+
 - name: Core Plugins | KubeGems Service
   community.kubernetes.k8s:
     state: present
@@ -10,7 +26,10 @@
     #- kubegems/minio/pvc.yaml
     #- kubegems/minio/deployment.yaml
     #- kubegems/minio/service.yaml
+    - kubegems/redis/pvc.yaml
     - kubegems/redis/configmap.yaml
+    - kubegems/redis/configmap-health.yaml
+    - kubegems/redis/configmap-script.yaml
     - kubegems/redis/deploy.yaml
     - kubegems/redis/service.yaml
     - kubegems/gitea/pvc.yaml
@@ -25,7 +44,6 @@
     - kubegems/service/certification.yaml
     - kubegems/service/deploy.yaml
     - kubegems/service/service.yaml
-    - kubegems/service/secret.yaml
 
 - name: Core Plugins | Lookup kubeGems Service Config
   set_fact:

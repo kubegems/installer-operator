@@ -20,10 +20,35 @@ spec:
       containers:
       - env:
         - name: MYSQL_ROOT_PASSWORD
-          value: GhghVoeafevku
+          valueFrom:
+            secretKeyRef:
+              key: mysql-root-password
+              name: gems-secret
         image: "{{ global.repository | default('docker.io/kubegems')}}/gems-mysql:5.7.33"
         imagePullPolicy: IfNotPresent
         name: gems-mysql
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - '-c'
+              - exec mysqladmin status -uroot -p$MYSQL_ROOT_PASSWORD
+          failureThreshold: 3
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          exec:
+            command:
+              - sh
+              - '-c'
+              - exec mysqladmin status -uroot -p$MYSQL_ROOT_PASSWORD
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
         ports:
         - containerPort: 3306
           name: tcp-3306

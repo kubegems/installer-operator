@@ -36,10 +36,27 @@ spec:
         - service
         - migrate
         - --initdata=true
-        envFrom:
-        - secretRef:
-            optional: true
-            name: gems-env
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mysql-root-password
+              name: gems-secret
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-password
+              name: gems-secret
+        - name: GIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: gitea-root-password
+              name: gems-secret
+        - name: ARGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: argo-admin-password
+              name: gems-secret
         volumeMounts:
         - mountPath: /serv/certs/jwt
           name: gems-jwt-certs

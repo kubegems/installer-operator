@@ -60,9 +60,15 @@ spec:
             - name: GITEA_TEMP
               value: /tmp/gitea
             - name: GITEA_ADMIN_USERNAME
-              value: "root"
+              valueFrom:
+                secretKeyRef:
+                  key: gitea-root-user
+                  name: gems-secret
             - name: GITEA_ADMIN_PASSWORD
-              value: "Cloudminds1688"
+              valueFrom:
+                secretKeyRef:
+                  key: gitea-root-password
+                  name: gems-secret
           volumeMounts:
             - name: init
               mountPath: /usr/sbin
