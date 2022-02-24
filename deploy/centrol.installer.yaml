@@ -1,4 +1,4 @@
-apiVersion: kubegems.io/v1alpha1
+apiVersion: plugins.kubegems.io/v1beta1
 kind: Installer
 metadata:
   name: kubegems-plugins
