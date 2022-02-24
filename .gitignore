@@ -16,7 +16,5 @@ bin
 
 # test for localhost
 roles/installer_localhost/*
-roles/installer/defaults/*.yaml
 roles/installer/files/kubegems
-test.yaml
 roles/installer/files/gems/service/*

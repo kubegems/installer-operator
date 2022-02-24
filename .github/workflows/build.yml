@@ -3,13 +3,15 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches:
-      - main
-      - develop
+      - 'main'
+      - 'develop'
+      - 'release-*'
     # Publish semver tags as releases.
     tags: ["v*.*.*"]
   pull_request:
     branches:
-      - main
+      - 'main'
+      - 'release-*'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -22,6 +24,30 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+
+    steps:
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.2.0
+        kubectl_version: v1.20.8
+        cluster_name: kubegems-installer-test
+      
+      - name: Play Ansible Playbooks
+        uses: arillso/action.playbook@master
+        with:
+          playbook: test.yaml
+          galaxy_file: ./requirements.yml
+        env:
+          RUNNING_MODE: 'centrol'
+          LOCATION: 'inside'
+    
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
