@@ -1,0 +1,34 @@
+- name: Kubernetes Plugins | Local Path Provisioner
+  community.kubernetes.k8s:
+    state: '{{"present" if kubernetes_plugins.local_path.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - storages/local-path/sa.yaml
+    - storages/local-path/clusterrole.yaml
+    - storages/local-path/clusterrolebinding.yaml
+    - storages/local-path/configmap.yaml
+    - storages/local-path/storageclass.yaml
+
+- name: Kubernetes Plugins | Local Path Provisioner
+  community.kubernetes.k8s:
+    state: '{{"present" if kubernetes_plugins.local_path.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+    wait: yes
+    wait_sleep: 10
+    wait_condition:
+      reason: MinimumReplicasAvailable
+      status: True
+      type: Available
+  with_items:
+    - storages/local-path/deploy.yaml
+
+# apigroup: snapshot.storage.k8s.io/v1
+- name: Kubernetes Plugins | Snapshot | CRDs
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - storages/crds/volumesnapshot.yaml
+    - storages/crds/volumesnapshotclasses.yaml
+    - storages/crds/volumesnapshotcontents.yaml
+  ignore_errors: true

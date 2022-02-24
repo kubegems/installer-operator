@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: gems-elasticsearch-headless
+  namespace: observability
+  labels:
+    app: "gems-elasticsearch"
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  selector:
+    app: "gems-elasticsearch"
+  ports:
+  - name: http
+    port: 9200
+  - name: transport
+    port: 9300

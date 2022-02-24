@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/name: node-problem-detector
+  name: node-problem-detector
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: node-problem-detector
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  endpoints:
+  - port: metrics
+    path: /metrics
+    interval: 60s
+    relabelings:
+    - action: replace
+      targetLabel: node
+      sourceLabels:
+        - __meta_kubernetes_pod_node_name
+    - action: replace
+      targetLabel: host_ip
+      sourceLabels:
+        - __meta_kubernetes_pod_host_ip

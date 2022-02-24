@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: argocd-metrics
+  namespace: gemcloud-workflow-system
+  labels:
+    app.kubernetes.io/name: argocd-metrics
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-metrics
+  endpoints:
+    - port: metrics
+      honorLabels: true
+      relabelings:
+        - regex: endpoint|service|pod|container|namespace
+          action: labeldrop
+      metricRelabelings:
+        - regex: instance
+          action: labeldrop

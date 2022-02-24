@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: logging-operator
+  namespace: gemcloud-logging-system
+  labels:
+    app.kubernetes.io/name: logging-operator
+    app.kubernetes.io/version: "3.15.0"

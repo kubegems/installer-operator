@@ -1,0 +1,24 @@
+# permissions for end users to edit installers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: installer-editor-role
+rules:
+- apiGroups:
+  - plugins.kubegems.io
+  resources:
+  - installers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - plugins.kubegems.io
+  resources:
+  - installers/status
+  verbs:
+  - get

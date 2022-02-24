@@ -1,0 +1,19 @@
+#jinja2:lstrip_blocks: True
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-chartmuseum
+  name: gems-chartmuseum
+  namespace: gemcloud-system
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ core_plugins.kubegems_centrol.operator.gems_chartmuseum.persistent.size | default('10Gi')}}
+  {% if core_plugins.kubegems_centrol.operator.gems_chartmuseum.persistent.storageclass is defined %} 
+  storageClassName: {{ core_plugins.kubegems_centrol.operator.gems_chartmuseum.persistent.storageclass }}
+  {% else %}
+  storageClassName: {{ global.storageclass | default('local-path') }}
+  {% endif %}

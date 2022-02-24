@@ -1,0 +1,40 @@
+- name: Kubernetes Plugins | Calico | CRDs
+  when: kubernetes_plugins.calico is defined
+  community.kubernetes.k8s:
+    #state: '{{"present" if kubernetes_plugins.calico.enabled else ( "absent" if kubernetes_plugins.calico.force_delete else "present" )}}'
+    #state: '{{"present" if kubernetes_plugins.calico.enabled else "absent" }}'
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - calico/crds/bgpconfigurations.yaml
+    - calico/crds/bgppeers.yaml
+    - calico/crds/blockaffinities.yaml
+    - calico/crds/clusterinfomations.yaml
+    - calico/crds/felixconfigurations.yaml
+    - calico/crds/globalnetworkpolicies.yaml
+    - calico/crds/globalnetworksets.yaml
+    - calico/crds/hostendpoints.yaml
+    - calico/crds/ipamblocks.yaml
+    - calico/crds/ipamconfigs.yaml
+    - calico/crds/ipamhandles.yaml
+    - calico/crds/ippools.yaml
+    - calico/crds/kubecontrollersconfigurations.yaml
+    - calico/crds/networkpolicies.yaml
+    - calico/crds/networksets.yaml
+
+- name: Kubernetes Plugins | Calico 
+  when: kubernetes_plugins.calico is defined
+  community.kubernetes.k8s:
+    state: '{{"present" if kubernetes_plugins.calico.enabled else "absent" }}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - calico/sa.yaml
+    - calico/sa-controller.yaml
+    - calico/configmap.yaml
+    - calico/clusterrole.yaml
+    - calico/clusterrole-node.yaml
+    - calico/clusterrolebinding.yaml
+    - calico/clusterrolebinding-node.yaml
+    - calico/calico.yaml
+    - calico/calico-controller.yaml
+    - calico/pdb.yaml

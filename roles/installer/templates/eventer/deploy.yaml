@@ -1,0 +1,80 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-eventer
+  name: gems-eventer
+  namespace: gemcloud-logging-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gems-eventer
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gems-eventer
+    spec:
+      serviceAccountName: gems-eventer
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: gems-eventer
+                namespaces:
+                  - "gemcloud-logging-system"
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+      containers:
+        - name: gems-eventer
+          image: "{{ global.repository | default('docker.io/kubegems')}}/gems-eventer:{{ core_plugins.eventer.details.version | default('v1.1') }}"
+          imagePullPolicy: IfNotPresent
+          args:
+            - -conf=/data/config.yaml
+          env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi 
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - /probe.sh
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            timeoutSeconds: 30
+            successThreshold: 1
+            failureThreshold: 10
+          securityContext:
+            capabilities:
+              add: []
+              drop:
+              - ALL
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: 1001
+          volumeMounts:
+            - mountPath: /data
+              name: cfg
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+        - name: {{ global.imagepullsecret | default('kubegems')}}
+      {% endif %}
+      securityContext:
+        fsGroup: 1001
+      volumes:
+        - name: cfg
+          configMap:
+            name: gems-eventer-cfg

@@ -1,0 +1,62 @@
+---
+- name: Core Plugins| Create Namespace Istio System
+  when: core_plugins.istio.enabled
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: istio-system
+        labels:
+          istio-operator-managed: Reconcile
+          istio-injection: disabled
+          topology.istio.io/network: "{{ cluster_name }}"
+
+- name: Core Plugins | Istio CRDs
+  when: core_plugins.istio.enabled
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - istio/operator/crds/istiooperator.yaml
+
+- name: Core Plugins | Istio Operator
+  community.kubernetes.k8s:
+    state: '{{ "present" if core_plugins.istio.enabled else "absent" }}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+    wait_condition:
+      status: true
+  with_items:
+    - istio/operator/sa.yaml
+    - istio/operator/clusterrole.yaml
+    - istio/operator/clusterrolebinding.yaml
+    - istio/operator/deploy.yaml
+    - istio/operator/service.yaml 
+  notify:
+    - Scale down KubeGems Controller
+    - Scale up KubeGems Controller
+
+- name: Core Plugins | Istio 
+  community.kubernetes.k8s:
+    state: '{{ "present" if core_plugins.istio.enabled else "absent" }}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+    merge_type: strategic-merge
+  ignore_errors: yes
+  with_items:
+    - istio/istio.yaml
+
+- name: Core Plugins | Kiali 
+  community.kubernetes.k8s:
+    state: '{{ "present" if core_plugins.istio.operator.kiali.enabled and core_plugins.istio.enabled else "absent" }}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - istio/kiali/sa.yaml
+    - istio/kiali/clusterrole-view.yaml
+    - istio/kiali/clusterrole-server.yaml
+    - istio/kiali/clusterrolebinding.yaml
+    - istio/kiali/role.yaml
+    - istio/kiali/rolebinding.yaml
+    - istio/kiali/configmap.yaml
+    - istio/kiali/deploy.yaml
+    - istio/kiali/service.yaml 

@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-minio
+  name: gems-minio
+  namespace: gemcloud-system
+spec:
+  endpoints:
+    - interval: 30s
+      path: /minio/v2/metrics/cluster
+      port: minio
+  namespaceSelector:
+    matchNames:
+      - gemcloud-system
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gems-minio

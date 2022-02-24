@@ -1,0 +1,88 @@
+---
+- name: Core Plugins | KubeGems Agent 
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - kubegems/agent/issuer.yaml
+    - kubegems/agent/certification.yaml
+    - kubegems/agent/sa.yaml
+    - kubegems/agent/clusterrole.yaml
+    - kubegems/agent/clusterrolebinding.yaml
+    - kubegems/agent/deploy.yaml
+    - kubegems/agent/kubectl.yaml
+    - kubegems/agent/service.yaml
+
+- name: Core Plugins | KubeGems Controller | CRDs
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_fileglob:
+    - "templates/kubegems/controller/crds/*.yaml"
+
+- name: Core Plugins | KubeGems Controller 
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_fileglob:
+    - "templates/kubegems/controller/*.yaml"
+
+- name: Core Plugins | Basic Gateway | CRDs
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - gateway/crd/crd.yaml
+
+- name: Core Plugins | Basic Gateway 
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - gateway/metrics/service.yaml
+    - gateway/rbac/sa.yaml
+    - gateway/rbac/nginx-ingress-operator-leader-election-role.yaml
+    - gateway/rbac/nginx-ingress-operator-leader-election-rolebinding.yaml
+    - gateway/rbac/nginx-ingress-operator-manager-role.yaml
+    - gateway/rbac/nginx-ingress-operator-manager-rolebinding.yaml
+    - gateway/rbac/nginx-ingress-operator-metrics-reader.yaml
+    - gateway/rbac/nginx-ingress-operator-proxy-role.yaml
+    - gateway/rbac/nginx-ingress-operator-proxy-rolebinding.yaml
+    - gateway/configmap.yaml
+    - gateway/operator.yaml
+    - gateway/service.yaml
+
+- name: Core Plugins | Argo Rollouts | CRDs
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - argo-rollouts/v1.1.0/crds/analysisruns.yaml
+    - argo-rollouts/v1.1.0/crds/analysistemplates.yaml
+    - argo-rollouts/v1.1.0/crds/clusteranalysistemplates.yaml
+    - argo-rollouts/v1.1.0/crds/experiments.yaml
+    - argo-rollouts/v1.1.0/crds/rollouts.yaml
+
+- name: Core Plugins | Argo Rollouts 
+  community.kubernetes.k8s:
+    state: '{{"present" if core_plugins.argo_rollouts.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - argo-rollouts/v1.1.0/sa.yaml
+    - argo-rollouts/v1.1.0/secret.yaml
+    - argo-rollouts/v1.1.0/clusterrole-rollouts.yaml
+    - argo-rollouts/v1.1.0/clusterrole-admin.yaml
+    - argo-rollouts/v1.1.0/clusterrole-edit.yaml
+    - argo-rollouts/v1.1.0/clusterrole-view.yaml
+    - argo-rollouts/v1.1.0/clusterrolebinding-rollouts.yaml
+    - argo-rollouts/v1.1.0/deploy.yaml
+    - argo-rollouts/v1.1.0/service.yaml
+
+
+- name: Core Plugins | Argo Rollouts AnalysisTemplate
+  community.kubernetes.k8s:
+    state: '{{"present" if core_plugins.argo_rollouts.enabled else "absent"}}'
+    definition: "{{ lookup('file', item) | from_yaml }}"
+  ignore_errors: yes
+  with_items:
+    - argo-rollouts/analysis-template.yaml

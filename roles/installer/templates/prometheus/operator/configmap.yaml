@@ -1,0 +1,10 @@
+#jinja2:lstrip_blocks: True
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-operator
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: prometheus-operator
+data:
+  prometheus-config-reloader: {{ global.repository | default('docker.io/kubegems')}}/prometheus-config-reloader:{{ core_plugins.monitoring.details.version | default('v0.50.0-gems')}}

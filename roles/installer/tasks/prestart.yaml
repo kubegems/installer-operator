@@ -1,0 +1,64 @@
+- name: Setting Installer Running Mode
+  set_fact:
+    mode: "{{ lookup('env', 'RUNNING_MODE') | default('local', True) }}"  
+
+- name: Setting Kubegems Centrol Location
+  set_fact:
+    locations: "{{ lookup('env', 'LOCATION') | default('inside', True) }}"  
+
+# -- TODO: Check kubernetes default StorageClass
+#- name: Get Lists of StorageClass
+#  community.kubernetes.k8s_info:
+#    api_version: "storage.k8s.io/v1"
+#    kind: storageclasses
+#  register: sc_list_raw
+#
+#- debug: msg="{{ sc_list_raw | json_query(stroageclass_jsonparse) }}"
+#  vars:
+#    aaa: 'resources[*].metadata.{name: name, default: annotations."storageclass.kubernetes.io/is-default-class"}'
+#  register: sc_list
+
+#- debug: msg="{{ sc_list  | json_query('[?default == true | string]').name }}"
+#  register: default_storageclass
+
+- name: Core Plugins| Create Namespace Gemcloud Monitoring System
+  community.kubernetes.k8s:
+    name: gemcloud-monitoring-system
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Core Plugins| Create Namespace Gemcloud Logging System
+  community.kubernetes.k8s:
+    name: gemcloud-logging-system
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Core Plugins| Create Namespace Gemcloud Workflow System
+  community.kubernetes.k8s:
+    name: gemcloud-workflow-system
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Core Plugins| Create Namespace Gemcloud Gateway System
+  community.kubernetes.k8s:
+    name: gemcloud-gateway-system
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Core Plugins| Create Namespace Gemcloud System
+  community.kubernetes.k8s:
+    name: gemcloud-system
+    api_version: v1
+    kind: Namespace
+    state: present
+    
+- name: Kubernetes Plugins | Namespace local-path-storage
+  community.kubernetes.k8s:
+    name: local-path-storage
+    api_version: v1
+    kind: Namespace
+    state: '{{"present" if kubernetes_plugins.local_path.enabled else "absent"}}'

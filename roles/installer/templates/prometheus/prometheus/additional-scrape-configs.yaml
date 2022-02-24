@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  prometheus-additional.yaml: LSBqb2JfbmFtZTogInByb21ldGhldXMiCiAgc3RhdGljX2NvbmZpZ3M6CiAgICAtIHRhcmdldHM6IFsibG9jYWxob3N0OjkwOTAiXQ==
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-prometheus
+  name: additional-scrape-configs
+  namespace: gemcloud-monitoring-system

@@ -1,0 +1,56 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-kube-proxy
+  namespace: gemcloud-monitoring-system
+  labels:
+    kubegems.io/plugins: monitoring
+    app.kubernetes.io/name: kube-proxy
+spec:
+  selector:
+    matchLabels:
+      kubegems.io/plugins: monitoring
+      app.kubernetes.io/name: kube-proxy
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  endpoints:
+    - port: http-metrics
+      scheme: https
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        serverName: kubernetes
+        insecureSkipVerify: true
+      honorLabels: true
+      relabelings:
+        - targetLabel: __address__
+          replacement: kubernetes.default.svc:443
+        - sourceLabels: [__meta_kubernetes_pod_node_name]
+          regex: (.+)
+          targetLabel: __metrics_path__
+          replacement: /api/v1/nodes/${1}:10250/proxy/metrics
+        - regex: endpoint|service|namespace
+          action: labeldrop
+      metricRelabelings:
+        - regex: instance
+          action: labeldrop
+        # apiserver_client_certificate_expiration_seconds_bucket
+        # apiserver_client_certificate_expiration_seconds_count
+        # apiserver_client_certificate_expiration_seconds_sum
+
+        # apiserver_storage_data_key_generation_duration_seconds_bucket
+        # apiserver_storage_data_key_generation_duration_seconds_count
+        # apiserver_storage_data_key_generation_duration_seconds_sum
+        # apiserver_storage_data_key_generation_failures_total
+        # apiserver_storage_envelope_transformation_cache_misses_total
+        - sourceLabels: [__name__]
+          regex: apiserver_(client_certificate|storage)_(.*)
+          action: drop
+        # 不知道为啥，kube-proxy也会有kubelet的指标，全部drop
+        - sourceLabels: [__name__]
+          regex: kubelet_(.*)
+          action: drop
+        - sourceLabels: [__name__]
+          regex: storage_operation_(.*)
+          action: drop

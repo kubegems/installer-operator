@@ -1,0 +1,15 @@
+piVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kiali-controlplane
+  namespace: istio-system
+  labels:
+    app: kiali
+    app.kubernetes.io/name: kiali
+    version: "v1.38.0"
+rules:
+- apiGroups: [""]
+  resources:
+  - secrets
+  verbs:
+  - list

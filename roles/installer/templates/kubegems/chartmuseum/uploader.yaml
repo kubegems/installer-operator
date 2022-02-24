@@ -1,0 +1,31 @@
+#jinja2:lstrip_blocks: True
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+  labels:
+    app.kubernetes.io/name: gems-charts-uploader
+  name: gems-charts-uploader
+  namespace: gemcloud-system
+spec:
+  backoffLimit: 3
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gems-charts-uploader
+      name: gems-charts-uploader
+    spec:
+      containers:
+      - image: "{{ globle.repository | default('docker.io/kubegems')}}/charts-uploader:v2.3.0"
+        imagePullPolicy: Always
+        name: gems-charts-uploader
+      dnsPolicy: ClusterFirst
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+      - name: {{ global.imagepullsecret | default('kubegems') }}
+      {% endif %}
+      restartPolicy: OnFailure
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

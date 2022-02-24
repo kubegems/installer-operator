@@ -1,0 +1,116 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: node-exporter
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: node-exporter
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  minReadySeconds: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: node-exporter
+    spec:
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+      serviceAccountName: node-exporter
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+        - name: {{ global.imagepullsecret | default('kubegems')}}
+      {% endif %}
+      affinity:
+        podAffinity:
+
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: node-exporter
+                namespaces:
+                  - "gemcloud-monitoring-system"
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        nodeAffinity:
+
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+        runAsNonRoot:
+      containers:
+        - name: node-exporter
+          image: "{{ global.repository | default('docker.io/kubegems')}}/node-exporter:{{ core_plugins.node_exporter.details.version | default("v1.1.1-debian-10-r0") }}"
+          imagePullPolicy: IfNotPresent
+          args: 
+            - --path.sysfs=/host/sys
+            - --path.rootfs=/host/root
+            - --web.listen-address=0.0.0.0:9100
+            - --collector.tcpstat
+            - --collector.processes
+            - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|tmpfs|fuse.*)
+            - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)
+            - --collector.netclass.ignored-devices=^(cali.*|veth.*|cni.*|docker.*|flannel.*)
+            - --no-collector.ipvs
+            - --no-collector.btrfs
+            - --no-collector.edac
+            - --no-collector.mdadm
+            - --no-collector.rapl
+            - --no-collector.zfs
+            - --no-collector.arp
+            - --no-collector.nfs
+            - --no-collector.nfsd
+            - --no-collector.schedstat
+            - --no-collector.bcache
+          ports:
+            - name: metrics
+              containerPort: 9100
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 6
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+            httpGet:
+              path: /
+              port: metrics
+          readinessProbe:
+            failureThreshold: 6
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+            httpGet:
+              path: /
+              port: metrics
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+            - mountPath: /host/sys
+              mountPropagation: HostToContainer
+              name: sys
+              readOnly: true
+            - mountPath: /host/root
+              mountPropagation: HostToContainer
+              name: root
+              readOnly: true
+      hostNetwork: true
+      hostPID: true
+      volumes:
+        - hostPath:
+            path: /sys
+          name: sys
+        - hostPath:
+            path: /
+          name: root

@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: coredns
+  namespace: gemcloud-monitoring-system
+  labels:
+    kubegems.io/plugins: monitoring
+    app.kubernetes.io/name: coredns
+spec:
+  jobLabel: k8s-app
+  selector:
+    matchLabels:
+      kubegems.io/plugins: monitoring
+      app.kubernetes.io/name: coredns
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  endpoints:
+    - port: http-metrics
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      relabelings:
+        # 多副本保留pod名称
+        - regex: endpoint|service|container|namespace
+          action: labeldrop
+      metricRelabelings:
+        - regex: instance
+          action: labeldrop

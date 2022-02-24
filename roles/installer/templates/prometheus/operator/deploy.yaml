@@ -1,0 +1,83 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-operator
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: prometheus-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-operator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: prometheus-operator
+    spec:
+      serviceAccountName: prometheus-operator
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+        - name: {{ global.imagepullsecret | default('kubegems')}}
+      {% endif %}
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+        runAsNonRoot:
+      affinity:
+        podAffinity:
+
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: prometheus-operator 
+                namespaces:
+                  - "gemcloud-monitoring-system"
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        nodeAffinity:
+
+      containers:
+        - name: prometheus-operator
+          image: "{{ global.repository | default("docker.io/kubegems") }}/prometheus-operator:{{ core_plugins.monitoring.details.version | default('v0.50.0-gems')}}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PROMETHEUS_CONFIG_RELOADER
+              valueFrom:
+                configMapKeyRef:
+                  name: prometheus-operator
+                  key: prometheus-config-reloader
+          args:
+            - --kubelet-service=kube-system/kube-promethe-kubelet
+            - --log-format=logfmt
+            - --log-level=info
+            - --localhost=127.0.0.1
+            - --prometheus-config-reloader=$(PROMETHEUS_CONFIG_RELOADER)
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+            failureThreshold: 6
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+            failureThreshold: 6
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false

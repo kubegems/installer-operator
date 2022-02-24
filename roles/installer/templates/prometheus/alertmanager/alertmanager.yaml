@@ -1,0 +1,70 @@
+#jinja2:lstrip_blocks: True
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  name: gemcloud
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: alertmanager
+spec:
+  {% if core_plugins.monitoring.operator.alertmanager.image.tag is defined %}
+  image: "{{ global.repository | default('docker.io/kubegems')}}/alertmanager:{{ core_plugins.monitoring.operator.alertmanager.image.tag }}"
+  {% else %}
+  image: "{{ global.repository | default('docker.io/kubegems')}}/alertmanager:0.22.2-debian-10-r2"
+  {% endif %}
+  listenLocal: false
+  externalUrl: http://alertmanager.gemcloud-monitoring-system.svc.cluster.local:9093
+  routePrefix: "/"
+  paused: false
+  logFormat: logfmt
+  alertmanagerConfigSelector:
+    matchLabels:
+      alertmanagerConfig: gemcloud
+  alertmanagerConfigNamespaceSelector:
+    matchExpressions:
+    - key: alertmanager
+      operator: DoesNotExist
+  logLevel: info
+  replicas: {{ core_plugins.monitoring.operator.alertmanager.replicas | default('1') }}
+  retention: {{ core_plugins.monitoring.operator.alertmanager.retention | default('14d') }}
+  podMetadata:
+    labels:
+      app.kubernetes.io/name: alertmanager
+  storage:
+     volumeClaimTemplate:
+       spec:
+         accessModes:
+         - ReadWriteOnce
+         {% if core_plugins.monitoring.operator.alertmanager.persistent.storageclass is defined %}
+         storageClassName: {{ core_plugins.monitoring.operator.alertmanager.persistent.storageclass }}
+         {% else %}
+         storageClassName: {{ global.storageclass | default('local-path') }}
+         {% endif %}
+         resources:
+           requests:
+             storage: {{ core_plugins.monitoring.operator.alertmanager.persistent.size | default('10Gi') }}
+         volumeMode: Filesystem
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 20m
+      memory: 30Mi
+  securityContext:
+    runAsUser: 1001
+    fsGroup: 1001
+  serviceAccountName: alertmanager
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: alertmanager
+            namespaces:
+              - "gemcloud-monitoring-system"
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+  globalAlertmanagerConfig:
+    name: gemcloud

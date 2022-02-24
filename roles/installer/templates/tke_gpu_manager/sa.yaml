@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tke-gpu-manager
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: tke-gpu-manager

@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-kube-scheduler
+  namespace: gemcloud-monitoring-system
+  labels:
+    kubegems.io/plugins: monitoring
+    app.kubernetes.io/name: kube-scheduler
+spec:
+  # jobLabel: component
+  selector:
+    matchLabels:
+      kubegems.io/plugins: monitoring
+      app.kubernetes.io/name: kube-scheduler
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  endpoints:
+    - port: https-metrics
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

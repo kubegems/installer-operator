@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-agent
+  name: gems-agent
+  namespace: gemcloud-system
+spec:
+  endpoints:
+    - path: /metrics
+      port: http-9100
+      honorLabels: true
+      relabelings:
+        - regex: endpoint|service|container|pod|namespace
+          action: labeldrop
+      metricRelabelings:
+        - regex: instance
+          action: labeldrop
+  namespaceSelector:
+    matchNames:
+      - gemcloud-system
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gems-agent

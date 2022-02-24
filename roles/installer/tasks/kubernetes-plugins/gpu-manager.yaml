@@ -1,0 +1,8 @@
+- name: Kubernetes Plugins | TKE GPU Vcuda Manager 
+  community.kubernetes.k8s:
+    state: '{{"present" if kubernetes_plugins.gpu_manager.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - tke_gpu_manager/sa.yaml
+    - tke_gpu_manager/clusterrolebinding.yaml
+    - tke_gpu_manager/daemonset.yaml

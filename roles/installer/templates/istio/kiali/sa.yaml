@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kiali
+  namespace: istio-system
+  labels:
+    app: kiali
+    app.kubernetes.io/name: kiali
+    version: "v1.38.0"

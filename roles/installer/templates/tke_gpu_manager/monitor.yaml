@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name:  tke-gpu-manager
+  namespace: kube-system
+  labels:
+    app:  tke-gpu-manager
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: tke-gpu-manager
+  podMetricsEndpoints:
+    - port: metrics
+      honorLabels: true
+      path: /metrics

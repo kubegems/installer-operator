@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: istio-system
+  name: istio-operator
+imagePullSecrets:
+- name: gemscloud

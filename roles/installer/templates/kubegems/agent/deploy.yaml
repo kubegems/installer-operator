@@ -1,0 +1,72 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gems-agent
+  namespace: gemcloud-system
+  labels:
+    app.kubernetes.io/name: gems-agent
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gems-agent
+  replicas: {{ core_plugins.kubegems_local.operator.gems_agent.replicas | default('1') }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gems-agent
+    spec:
+      serviceAccount: gems-agent
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+        - name: {{ golobal.imagepullsecret | default('kubegems')}}
+      {% endif %}
+      containers:
+        - name: gems-agent
+          image: "{{ global.repository | default('docker.io')}}/kubegems:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
+          imagePullPolicy: IfNotPresent
+          args: 
+          - agent
+          - --syetem-cafile=/certs/ca.crt
+          - --syetem-certfile=/certs/tls.crt
+          - --syetem-keyfile=/certs/tls.key
+          env:
+          - name: MY_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: "DEBUG"
+            {% if core_plugins.kubegems_local.operator.gems_agent.debug is defined and core_plugins.kubegems_local.operator.gems_agent.debug %}
+            value: "true"
+            {% else %}
+            value: "false"
+            {% endif %}
+          - name: "LOGLEVEL"
+            value: "info"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+          livenessProbe:
+            tcpSocket:
+              port: 8041
+          ports:
+            - containerPort: 8041
+              name: http-8041
+            - containerPort: 9100
+              name: http-9100
+          volumeMounts:
+            - name: cert
+              mountPath: /certs
+            - mountPath: /etc/localtime
+              name: timezone
+      volumes:
+        - hostPath:
+            path: /etc/localtime
+          name: timezone
+        - name: cert
+          secret:
+            secretName: gems-agent-cert

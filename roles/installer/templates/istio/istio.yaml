@@ -1,0 +1,109 @@
+#jinja2:lstrip_blocks: True
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  annotations:
+  name: gems-istio
+  namespace: istio-system
+spec:
+  components:
+    pilot:
+      k8s:
+        env:
+        - name: PILOT_FILTER_GATEWAY_CLUSTER_CONFIG
+          value: "true"
+    cni:
+      enabled: true
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: false
+    {% if core_plugins.istio.operator.eastwestgateway.enabled | default(false) | bool %}
+    - name: istio-eastwestgateway
+      namespace: gemcloud-gateway-system
+      label:
+        istio: eastwestgateway
+        app: istio-eastwestgateway
+        topology.istio.io/network: "{{ cluster_name | default('gems-default') }}"
+      enabled: true
+      k8s:
+        env:
+          - name: ISTIO_META_ROUTER_MODE
+            value: "sni-dnat"
+          - name: ISTIO_META_REQUESTED_NETWORK_VIEW
+            value: "{{ cluster_name | default('gems-default') }}"
+        resources:
+          limits:
+            cpu: 4000m
+            memory: 4Gi
+          requests:
+            cpu: 200m
+            memory: 1Gi
+        hpaSpec:
+          minReplicas: 1
+          maxReplicas: 3
+        service:
+          ports:
+            - name: status-port
+              port: 15021
+              targetPort: 15021
+            - name: tls
+              port: 15443
+              targetPort: 15443
+            - name: tls-istiod
+              port: 15012
+              targetPort: 15012
+            - name: tls-webhook
+              port: 15017
+              targetPort: 15017
+    {% endif %}
+  hub: {{ global.repository | default('docker.io/kubegems')}}
+  meshConfig:
+    defaultConfig:
+      {% if core_plugins.istio.operator.dns_proxy | default(true) | bool %}
+      proxyMetadata:
+        ISTIO_META_DNS_AUTO_ALLOCATE: "true"
+        ISTIO_META_DNS_CAPTURE: "true"
+      {% endif %}
+      {% if core_plugins.istio.operator.tracing.enabled | default(true) | bool %}
+      tracing:
+        sampling: "{{ core_plugins.istio.operator.tracing.param | default('50') }}"
+        zipkin:
+          address: "{{ core_plugins.itio.operator.tracing.address | default('jaeger-collector.observability.svc.cluster.local:9411') }}"
+      {% endif %}
+    enableTracing: true
+  tag: 1.11.0
+  values:
+    gateways:
+      istio-ingressgateway:
+        injectionTemplate: gateway
+    global:
+      meshID: mesh-default
+      multiCluster:
+        clusterName: "{{ cluster_name | default('gems-default') }}"
+      network: "{{ cluster_name | default('gems-default') }}"
+      proxy_init:
+        resources:
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+      proxy:
+        autoInject: disabled
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2048Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      {% if core_plugins.istio.operator.tracing.enabled | default(true) | bool %}
+      tracer:
+        zipkin:
+          address: "{{ core_plugins.itio.operator.tracing.urls | default('jaeger-collector.observability.svc.cluster.local:9411') }}"
+      {% endif %}
+    {% if core_plugins.istio.operator.istio_cni.enabled | default(true) | bool %}
+    istio_cni:
+      enabled: true
+    {% endif %}

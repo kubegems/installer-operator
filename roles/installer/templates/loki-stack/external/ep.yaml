@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  labels:
+    app.kubernetes.io/name: loki
+  name: loki-gateway
+  namespace: gemcloud-logging-system
+subsets:
+- addresses:
+  - ip: {{ core_plugins.logging.operator.loki.host.split(":")[0] | lower }}
+  ports:
+  - port: {{ core_plugins.logging.operator.loki.host.split(":")[1] | int }}
+    protocol: TCP

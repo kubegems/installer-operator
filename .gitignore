@@ -1,0 +1,22 @@
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin
+.DS_Store
+
+# editor and IDE paraphernalia
+.idea
+*.swp
+*.swo
+*~
+
+# test for localhost
+roles/installer_localhost/*
+roles/installer/defaults/*.yaml
+roles/installer/files/kubegems
+test.yaml
+roles/installer/files/gems/service/*

@@ -1,0 +1,45 @@
+- name: Core Plugins | Argocd | CRDs
+  when: mode == "centrol"
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - argocd/v1.8.7/crds/application.yaml
+    - argocd/v1.8.7/crds/project.yaml
+
+- name: Core Plugins | Argocd 
+  when: mode == "centrol"
+  community.kubernetes.k8s:
+    state: '{{"present" if core_plugins.argocd.enabled else "absent"}}'
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - argocd/v1.8.7/sa.yaml
+    - argocd/v1.8.7/sa-controller.yaml
+    - argocd/v1.8.7/sa-dex.yaml
+    - argocd/v1.8.7/secret.yaml
+    - argocd/v1.8.7/role-controller.yaml
+    - argocd/v1.8.7/role-dex.yaml
+    - argocd/v1.8.7/role.yaml
+    - argocd/v1.8.7/rolebinding-controller.yaml
+    - argocd/v1.8.7/rolebinding-dex.yaml
+    - argocd/v1.8.7/rolebinding.yaml
+    - argocd/v1.8.7/clusterrole-controller.yaml
+    - argocd/v1.8.7/clusterrole.yaml
+    - argocd/v1.8.7/clusterrolebinding-controller.yaml
+    - argocd/v1.8.7/clusterrolebinding.yaml
+    - argocd/v1.8.7/cm-cert.yaml
+    - argocd/v1.8.7/cm-gpg.yaml
+    - argocd/v1.8.7/cm-hosts.yaml
+    - argocd/v1.8.7/cm-rbac.yaml
+    - argocd/v1.8.7/cm.yaml
+    - argocd/v1.8.7/deploy-controller.yaml
+    - argocd/v1.8.7/deploy-dex.yaml
+    - argocd/v1.8.7/deploy-redis.yaml
+    - argocd/v1.8.7/deploy-repo.yaml
+    - argocd/v1.8.7/deploy.yaml
+    - argocd/v1.8.7/svc-dex.yaml
+    - argocd/v1.8.7/svc-redis.yaml
+    - argocd/v1.8.7/svc-repo.yaml
+    - argocd/v1.8.7/svc.yaml
+    - argocd/v1.8.7/svc-metrics.yaml
+    - argocd/v1.8.7/svc-metrics-app.yaml

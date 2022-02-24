@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alertmanager
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: alertmanager

@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    name: nginx-ingress-operator
+  name: nginx-ingress-operator-metrics
+  namespace: gemcloud-gateway-system
+spec:
+  endpoints:
+    - port: http-metrics
+  namespaceSelector:
+    matchNames:
+      - gemcloud-gateway-system
+  selector:
+    matchLabels:
+      name: nginx-ingress-operator

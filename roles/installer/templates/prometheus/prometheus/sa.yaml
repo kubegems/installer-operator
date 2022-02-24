@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: gemcloud-monitoring-system
+  labels:
+    app.kubernetes.io/name: prometheus

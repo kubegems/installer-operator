@@ -1,0 +1,54 @@
+#jinja2:lstrip_blocks: True
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    name: nvidia-device-plugin-ds
+  name: nvidia-device-plugin-daemonset
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: nvidia-device-plugin-ds
+  template:
+    metadata:
+      labels:
+        name: nvidia-device-plugin-ds
+    spec:
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+        - name: {{ global.imagepullsecret | default('kubegems')}}
+      {% endif %}
+      containers:
+      - image: "{{ global.repository | default('docker.io/kubegems') }}/nvidia-device-plugin:{{ kuberentes_plugins.nvidia_device_plugin.details.version | default('v1.0.0-beta')}}"
+        imagePullPolicy: IfNotPresent
+        name: nvidia-device-plugin-ctr
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - mountPath: /var/lib/kubelet/device-plugins
+          name: device-plugin
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        nvidia.com/gpu: "true"
+      restartPolicy: Always
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - effect: NoSchedule
+        key: nvidia.com/gpu
+        operator: Exists
+      volumes:
+      - hostPath:
+          path: /var/lib/kubelet/device-plugins
+          type: ""
+        name: device-plugin
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate

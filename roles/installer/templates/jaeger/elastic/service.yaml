@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: gems-elasticsearch
+  namespace: observability
+  labels:
+    app: "gems-elasticsearch"
+spec:
+  type: ClusterIP
+  selector:
+    app: "gems-elasticsearch"
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9200
+  - name: transport
+    protocol: TCP
+    port: 9300

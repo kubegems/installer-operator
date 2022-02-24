@@ -1,0 +1,107 @@
+#jinja2:lstrip_blocks: True
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-worker
+  name: gems-worker
+  namespace: gemcloud-system
+spec:
+  replicas: {{ core_plugins.kubegems_centrol.operator.gems_worker.replicas | default('1') }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gems-worker
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gems-worker
+    spec:
+      affinity:
+        podAffinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: gems-worker
+                namespaces:
+                  - "gemcloud-system"
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        nodeAffinity:
+      containers:
+      - image: "{{ global.repository | default('docker.io') }}/kubegems:{{ core_plugins.kubegems_centrol.details.version | default('latest') }}"
+        imagePullPolicy: IfNotPresent
+        args: 
+        - worker
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mysql-root-password
+              name: gems-secret
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-password
+              name: gems-secret
+        - name: GIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: gitea-root-password
+              name: gems-secret
+        - name: ARGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: argo-admin-password
+              name: gems-secret
+        - name: DEBUG
+          {% if core_plugins.kubegems_centrol.operator.gems_worker.debug is defined and core_plugins.kubegems_centrol.operator.gems_worker.debug %}
+          value: "true"
+          {% else %}
+          value: "false"
+          {% endif %}
+        - name: LOGLEVEL
+          value: info
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 9100
+          timeoutSeconds: 5
+        name: gems-worker
+        ports:
+        - containerPort: 9100
+          name: http-9100
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9100
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: timezone
+      {% if global.imagepullsecret is defined %}
+      imagePullSecrets:
+      - name: {{ global.imagepullsecret |default('kubegems') }}
+      {% endif %}
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /etc/localtime
+        name: timezone

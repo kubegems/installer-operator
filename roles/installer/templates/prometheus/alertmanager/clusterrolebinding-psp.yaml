@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gems-alertmanager-psp
+  labels:
+    app.kubernetes.io/name: alertmanager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gems-alertmanager-psp
+subjects:
+  - kind: ServiceAccount
+    name: alertmanager
+    namespace: gemcloud-monitoring-system

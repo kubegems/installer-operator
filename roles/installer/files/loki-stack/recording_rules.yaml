@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: gemcloud-logging-system
+  labels:
+    app.kubernetes.io/name: loki
+  name: loki-recording-rules
+data:
+  recording.rules: |-
+    groups:
+    - name: kubegems-observability-logging
+      interval: 1m
+      rules:
+      - record: logging_level_error
+        expr: sum by (namespace) (count_over_time({stream=~"stdout|stderr"} |~ `error` [1m]))
+      - record:eventer
+        expr: sum by (type,metadata_namespace) (count_over_time({container="gems-eventer"}|json [1m]))
+      - record: eventer_component
+        expr: sum by (source_component,metadata_namespace) (count_over_time({container="gems-eventer"}|json [1m]))
+      - record: eventer_kind
+        expr: sum by (involvedObject_kind,metadata_namespace) (count_over_time({container="gems-eventer"}|json [1m]))

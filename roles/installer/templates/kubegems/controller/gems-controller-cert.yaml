@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-controller-manager
+    control-plane: controller-manager
+  name: gems-controller-cert
+  namespace: gemcloud-system
+spec:
+  dnsNames:
+  - gems-webhook-service.gemcloud-system.svc
+  - gems-webhook-service.gemcloud-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: gems-selfsigned-issuer
+  secretName: controller-webhook-server-cert

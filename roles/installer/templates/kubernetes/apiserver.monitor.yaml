@@ -1,0 +1,58 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-apiserver
+  namespace: gemcloud-monitoring-system
+  labels:
+    kubegems.io/plugins: monitoring
+    app.kubernetes.io/name: apiserver
+spec:
+  selector:
+    matchLabels:
+      component: apiserver
+      provider: kubernetes
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: https
+      scheme: https
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        serverName: kubernetes
+        insecureSkipVerify: true
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      relabelings:
+        # 丢弃标签
+        # labeldrop不支持直接操作"__"开头的标签，需要先等relabel之后再drop
+        - regex: endpoint|service|namespace
+          action: labeldrop
+      metricRelabelings:
+        # instance 标签是prometheus加的，metricRelabelings是在写入前relabel，通过它才能drop
+        - regex: instance
+          action: labeldrop
+        # apiserver_admission_controller_admission_duration_seconds_bucket
+        # apiserver_admission_controller_admission_duration_seconds_count
+        # apiserver_admission_controller_admission_duration_seconds_sum
+        # apiserver_admission_step_admission_duration_seconds_bucket
+        # apiserver_admission_step_admission_duration_seconds_count
+        # apiserver_admission_step_admission_duration_seconds_sum
+        # apiserver_admission_step_admission_duration_seconds_summary
+        # apiserver_admission_step_admission_duration_seconds_summary_count
+        # apiserver_admission_step_admission_duration_seconds_summary_sum
+        # apiserver_admission_webhook_admission_duration_seconds_bucket
+        # apiserver_admission_webhook_admission_duration_seconds_count
+        # apiserver_admission_webhook_admission_duration_seconds_sum
+        # apiserver_admission_webhook_rejection_count
+
+        # apiserver_crd_webhook_conversion_duration_seconds_bucket
+        # apiserver_crd_webhook_conversion_duration_seconds_count
+        # apiserver_crd_webhook_conversion_duration_seconds_sum
+
+        # apiserver_watch_events_sizes_bucket
+        # apiserver_watch_events_sizes_count
+        # apiserver_watch_events_sizes_sum
+        # apiserver_watch_events_total
+        - sourceLabels: [__name__]
+          regex: apiserver_(admission|crd|watch_events)_(.*)
+          action: drop

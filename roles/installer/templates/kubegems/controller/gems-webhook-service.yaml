@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: gems-controller-manager
+    control-plane: controller-manager
+  name: gems-webhook-service
+  namespace: gemcloud-system
+spec:
+  ports:
+  - port: 443
+    targetPort: 9443
+  selector:
+    app.kubernetes.io/name: gems-controller-manager
+    control-plane: controller-manager
