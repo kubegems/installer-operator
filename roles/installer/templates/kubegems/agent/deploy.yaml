@@ -27,9 +27,10 @@ spec:
           imagePullPolicy: IfNotPresent
           args: 
           - agent
-          - --syetem-cafile=/certs/ca.crt
-          - --syetem-certfile=/certs/tls.crt
-          - --syetem-keyfile=/certs/tls.key
+          - --system-cafile=/certs/ca.crt
+          - --system-certfile=/certs/tls.crt
+          - --system-keyfile=/certs/tls.key
+          - --api-enablehttpsigs
           env:
           - name: MY_NAMESPACE
             valueFrom:

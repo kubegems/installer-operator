@@ -4,10 +4,10 @@ metadata:
   name: kubegems-plugins
   namespace: kubegems-installer
 spec:
-  cluster_name: kubegems-worker
+  cluster_name: "{{ .Cluster.ClusterName }}"
   # Container runtime, this field used to record container's logs
   # runtime: docker or containerd
-  runtime: containerd
+  runtime: "{{ .Cluster.Runtime }}"
   
   global:
     # Container repository on kubegems installer running.
@@ -28,7 +28,7 @@ spec:
       details:
         catalog: KubeGems
         description: KubeGems本地组件服务,运行在Kubernetes集群内部.
-        version: develop
+        version: "{{ .KubegemsVersion.GitVersion }}"
       namespace: gemcloud-system
       operator:
         cert_manager:

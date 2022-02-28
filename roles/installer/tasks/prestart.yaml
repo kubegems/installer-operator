@@ -61,4 +61,4 @@
     name: local-path-storage
     api_version: v1
     kind: Namespace
-    state: '{{"present" if kubernetes_plugins.local_path.enabled else "absent"}}'
+    state: '{{ "present" if kubernetes_plugins.local_path.enabled else "absent" }}'

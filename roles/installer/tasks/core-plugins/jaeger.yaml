@@ -40,7 +40,7 @@
 - name: Core Plugins | Observability Jaeger 
   ignore_errors: true
   community.kubernetes.k8s:
-    state: '{{"present" if core_plugins.jaeger.enabled else "absent"}}'
+    state: '{{ "present" if core_plugins.jaeger.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - jaeger/jaeger.yaml

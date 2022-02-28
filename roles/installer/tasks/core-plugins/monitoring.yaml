@@ -15,7 +15,7 @@
 
 - name: Core Plugins | Prometheus Operator 
   community.kubernetes.k8s:
-    state: '{{"present" if core_plugins.monitoring.operator.prometheus.enabled else "absent"}}'
+    state: '{{ "present" if core_plugins.monitoring.operator.prometheus.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - prometheus/operator/sa.yaml
@@ -31,7 +31,7 @@
 
 - name: Core Plugins | Prometheus 
   community.kubernetes.k8s:
-    state: '{{"present" if core_plugins.monitoring.operator.prometheus.enabled else "absent"}}'
+    state: '{{ "present" if core_plugins.monitoring.operator.prometheus.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - prometheus/prometheus/sa.yaml
@@ -54,7 +54,7 @@
 # alertmanager dependent by prometheus operator
 - name: Core Plugins | AlertManager 
   community.kubernetes.k8s:
-    state: '{{"present" if core_plugins.monitoring.operator.alertmanager.enabled and core_plugins.monitoring.operator.prometheus.enabled else "absent"}}'
+    state: '{{ "present" if core_plugins.monitoring.operator.alertmanager.enabled and core_plugins.monitoring.operator.prometheus.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - prometheus/alertmanager/sa.yaml

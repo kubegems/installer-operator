@@ -15,7 +15,7 @@ global:
 
   # Kubegems uses the built-in local-path-provisioner by defaults.
   # If you need to set a personalised storage class for the component, please configure it in the field "<component>.operator.persisten.storageclass".
-  storageclass: alibabacloud-cnfs-nas
+  storageclass: local-path
 
 core_plugins:
   kubegems_local:
