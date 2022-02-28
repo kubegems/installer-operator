@@ -1,0 +1,20 @@
+# .ansible-lint
+exclude_paths:
+  - ./bin/  
+  - ./config/
+  - ./playbooks/
+  - ./molecule/
+# parseable: true
+# quiet: true
+# verbosity: 1
+
+use_default_rules: true
+# Load custom rules from this specific folder
+# rulesdir:
+#   - ./rule/directory/
+
+# Offline mode disables installation of requirements.yml
+offline: false
+
+skip_list:
+ - ignore-errors

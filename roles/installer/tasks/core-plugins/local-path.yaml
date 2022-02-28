@@ -1,6 +1,6 @@
 - name: Kubernetes Plugins | Local Path Provisioner
   community.kubernetes.k8s:
-    state: '{{"present" if kubernetes_plugins.local_path.enabled else "absent"}}'
+    state: '{{ "present" if kubernetes_plugins.local_path.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - storages/local-path/sa.yaml
@@ -11,7 +11,7 @@
 
 - name: Kubernetes Plugins | Local Path Provisioner
   community.kubernetes.k8s:
-    state: '{{"present" if kubernetes_plugins.local_path.enabled else "absent"}}'
+    state: '{{ "present" if kubernetes_plugins.local_path.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
     wait: yes
     wait_sleep: 10

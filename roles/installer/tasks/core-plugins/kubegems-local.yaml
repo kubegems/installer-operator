@@ -65,7 +65,7 @@
 
 - name: Core Plugins | Argo Rollouts 
   community.kubernetes.k8s:
-    state: '{{"present" if core_plugins.argo_rollouts.enabled else "absent"}}'
+    state: '{{ "present" if core_plugins.argo_rollouts.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - argo-rollouts/v1.1.0/sa.yaml
@@ -78,10 +78,9 @@
     - argo-rollouts/v1.1.0/deploy.yaml
     - argo-rollouts/v1.1.0/service.yaml
 
-
 - name: Core Plugins | Argo Rollouts AnalysisTemplate
   community.kubernetes.k8s:
-    state: '{{"present" if core_plugins.argo_rollouts.enabled else "absent"}}'
+    state: '{{ "present" if core_plugins.argo_rollouts.enabled else "absent" }}'
     definition: "{{ lookup('file', item) | from_yaml }}"
   ignore_errors: yes
   with_items:

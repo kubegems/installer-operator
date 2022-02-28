@@ -3,13 +3,15 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches:
-      - main
-      - develop
+      - 'main'
+      - 'develop'
+      - 'release-*'
     # Publish semver tags as releases.
     tags: ["v*.*.*"]
   pull_request:
     branches:
-      - main
+      - 'main'
+      - 'release-*'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -22,8 +24,26 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  ansible-lint:
+    runs-on: ubuntu-latest
+    steps:
+    # Important: This sets up your GITHUB_WORKSPACE environment variable
+    - uses: actions/checkout@v2
+
+    - name: Lint Ansible Playbook
+      # replace "master" with any valid ref
+      uses: ansible/ansible-lint-action@master
+      with:
+        targets: "test.yaml"
+        override-deps: |
+          ansible==5.3.0
+          ansible-lint==5.4.0
+        args: "-c .ansible-lint"
+
   # This workflow contains a single job called "build"
   build:
+    needs:
+    - ansible-lint
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     permissions:
@@ -71,3 +91,84 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.2.0
+        with:
+          cluster_name: kubegems-installer-test
+          node_image: kindest/node:v1.18.19
+
+      #- name: Set KubeConfig
+      #  run: |
+      #    echo "GITHUB_KUBECONFIG=$(cat ~/.kube/config | base64 )" >> $GITHUB_ENV
+
+      # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+      - name: Set KubeConfig
+        run: |
+          echo 'GITHUB_KUBECONFIG<<EOF' >> $GITHUB_ENV
+          cat ~/.kube/config | base64 >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Deploy Installer Operator
+        run: |
+          wget -q https://dl.k8s.io/release/v1.23.0/bin/linux/amd64/kubectl
+          chmod +x ./kubectl
+          kubectl apply -f deploy/centrol.yaml
+          kubectl set image -n kubegems-installer deployment/kubegems-installer-manager manager=${{ steps.meta.outputs.tags }}
+          kubectl apply -f deploy/centrol.installer.yaml
+          sleep 180
+          echo "------- Describe Installer Operator --------"
+          kubectl describe pod -n kubegems-installer
+          echo "------- Describe Resources --------"
+          kubectl describe installer kubegems-plugins -n kubegems-installer
+
+      #- name: "Create Installer Operator"
+      #  uses: steebchen/kubectl@v2.0.0
+      #  with:
+      #    config: ${{ env.GITHUB_KUBECONFIG}}
+      #    command: apply -f deploy/centrol.yaml
+
+      #- name: Set Installer Operator Images
+      #  uses: steebchen/kubectl@v2.0.0
+      #  with:
+      #    config: ${{ env.GITHUB_KUBECONFIG}}
+      #    command: set image -n kubegems-installer deployment/kubegems-installer-manager manager=${{ job.build.steps.meta.outputs.tags }}
+
+      #- name: "Create Installer CustomResource"
+      #  uses: steebchen/kubectl@v2.0.0
+      #  with:
+      #    config: ${{ env.GITHUB_KUBECONFIG}}
+      #    command: apply -f deploy/centrol.installer.yaml
+
+      #- name: Sleeping
+      #  run: |
+      #    /bin/sleep 60
+
+      #- name: Check installer operator status
+      #  uses: steebchen/kubectl@v2.0.0
+      #  with:
+      #    config: ${{ env.GITHUB_KUBECONFIG}}
+      #    command: describe pod -n kubegems-installer
+
+      #- name: Check installer operator status
+      #  uses: steebchen/kubectl@v2.0.0
+      #  with:
+      #    config: ${{ env.GITHUB_KUBECONFIG}}
+      #    command: describe installer kubegems-plugins -n kubegems-installer
+
+      #- name: Install Python library
+      #  run: |
+      #    /opt/pipx/venvs/ansible-core/bin/python -m pip install openshift 
+      #
+      #- name: Play Ansible Playbooks
+      #  uses: dawidd6/action-ansible-playbook@v2
+      #  env:
+      #    LOCATION: inside
+      #    RUNNING_MODE: centrol
+      #  with:
+      #    playbook: test.yaml
+      #    requirements: requirements.yml
+      #    options: |
+      #      --check
+      #      --verbose
+           

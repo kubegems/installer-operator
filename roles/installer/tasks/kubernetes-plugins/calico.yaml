@@ -25,7 +25,7 @@
 - name: Kubernetes Plugins | Calico 
   when: kubernetes_plugins.calico is defined
   community.kubernetes.k8s:
-    state: '{{"present" if kubernetes_plugins.calico.enabled else "absent" }}'
+    state: '{{ "present" if kubernetes_plugins.calico.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - calico/sa.yaml
