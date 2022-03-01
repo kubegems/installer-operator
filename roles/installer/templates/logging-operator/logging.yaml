@@ -88,9 +88,9 @@ spec:
               storage: {{ core_plugins.logging.operator.fluentd.persistent.size | default('20Gi')}}
               {% endif %}
           volumeMode: Filesystem
-          {% if core_plugins.ogging.operator.fluentd.persistent.storageclass is defined %}
+          {% if core_plugins.logging.operator.fluentd.persistent.storageclass is defined %}
           storageClassName: {{ core_plugins.logging.operator.fluentd.persistent.storageclass }}
-          {% else %}
+          {% elif global.storageclass is defined %}
           storageClassName: {{ global.storageclass | default('local-path') }}
           {% endif %}
     configReloaderImage:
