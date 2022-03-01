@@ -11,7 +11,7 @@ spec:
       app.kubernetes.io/name: kube-state-metrics
   namespaceSelector:
     matchNames:
-      - kube-system
+      - gemcloud-monitoring-system
   endpoints:
     - port: http
       honorLabels: true
