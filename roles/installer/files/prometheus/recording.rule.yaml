@@ -84,42 +84,38 @@ spec:
 
         # container cpu
         - record: gems_container_cpu_usage_cores
-          expr: sum(irate(container_cpu_usage_seconds_total{pod!="", image!=""}[5m]))by(container, pod, namespace, node)
+          expr: |
+            sum(irate(container_cpu_usage_seconds_total{pod!="", image!=""}[5m]))by(container, pod, namespace, node)
+            * on (namespace, pod) group_left(owner_kind,workload)
+            gems_pod_workload
         - record: gems_container_cpu_limit_cores
-          expr: sum(kube_pod_container_resource_limits_cpu_cores)by(container, pod, namespace, node)
+          expr: |
+            sum(kube_pod_container_resource_limits_cpu_cores)by(container, pod, namespace, node)
+            * on (namespace, pod) group_left(owner_kind,workload)
+            gems_pod_workload
         - record: gems_container_cpu_usage_percent
           expr: (gems_container_cpu_usage_cores / gems_container_cpu_limit_cores) * 100
-        - record: gems_container_with_workload_cpu_usage_cores
-          expr: |
-            gems_container_cpu_usage_cores
-            * on (namespace, pod) group_left(owner_kind,workload)
-            gems_pod_workload
-        - record: gems_container_with_workload_cpu_limit_cores
-          expr: |
-            gems_container_cpu_limit_cores
-            * on (namespace, pod) group_left(owner_kind,workload)
-            gems_pod_workload
 
         # container memory
         # 为了避免前后端修改以及命名风格的统一 gems_container_memory_usage_bytes 使用 container_memory_working_set_bytes，而不是 container_memory_usage_bytes
+        # 关于容器内存的讨论，参见 https://src.cloudminds.com/gemscloud/installer-operator/-/issues/30
         - record: gems_container_memory_usage_bytes
-          expr: sum(container_memory_working_set_bytes{pod!="", image!=""})by(container, pod, namespace, node)
+          expr: |
+            sum(container_memory_working_set_bytes{pod!="", image!=""})by(container, pod, namespace, node)
+            * on (namespace, pod) group_left(owner_kind,workload)
+            gems_pod_workload
         - record: gems_container_memory_rss
-          expr: sum(container_memory_rss{pod!="", image!=""})by(container, pod, namespace, node)
+          expr: |
+            sum(container_memory_rss{pod!="", image!=""})by(container, pod, namespace, node)
+            * on (namespace, pod) group_left(owner_kind,workload)
+            gems_pod_workload
         - record: gems_container_memory_limit_bytes
-          expr: sum(kube_pod_container_resource_limits_memory_bytes)by(container, pod, namespace, node)
+          expr: |
+            sum(kube_pod_container_resource_limits_memory_bytes)by(container, pod, namespace, node)
+            * on (namespace, pod) group_left(owner_kind,workload)
+            gems_pod_workload
         - record: gems_container_memory_usage_percent
           expr: (gems_container_memory_usage_bytes / gems_container_memory_limit_bytes) * 100
-        - record: gems_container_with_workload_memory_usage_bytes
-          expr: |
-            gems_container_memory_usage_bytes 
-            * on (namespace, pod) group_left(owner_kind,workload)
-            gems_pod_workload
-        - record: gems_container_with_workload_memory_limit_bytes
-          expr: |
-            gems_container_memory_limit_bytes
-            * on (namespace, pod) group_left(owner_kind,workload)
-            gems_pod_workload
 
         # container restart
         - record: gems_container_restart_times_last_5m
@@ -127,17 +123,13 @@ spec:
 
         # container network
         - record: gems_container_network_receive_bps
-          expr: sum(irate(container_network_receive_bytes_total{pod!="", image!=""}[5m]))by(container, pod, namespace, node)
-        - record: gems_container_with_workload_network_receive_bps
           expr: |
-            gems_container_network_receive_bps 
+            sum(irate(container_network_receive_bytes_total{pod!="", image!=""}[5m]))by(container, pod, namespace, node)
             * on (namespace, pod) group_left(owner_kind,workload)
             gems_pod_workload
         - record: gems_container_network_send_bps
-          expr: sum(irate(container_network_transmit_bytes_total{pod!="", image!=""}[5m]))by(container, pod, namespace, node)
-        - record: gems_container_with_workload_network_send_bps
           expr: |
-            gems_container_network_send_bps 
+            sum(irate(container_network_transmit_bytes_total{pod!="", image!=""}[5m]))by(container, pod, namespace, node)
             * on (namespace, pod) group_left(owner_kind,workload)
             gems_pod_workload
 
@@ -154,31 +146,33 @@ spec:
           expr: sum(kubelet_volume_stats_inodes_used)by(namespace, node, persistentvolumeclaim)
 
         # namespace、environment、project、tenant
-        - record: gems_namespace_with_environment_cpu_usage_cores
+        - record: gems_namespace_labels
+          expr: sum(label_replace(label_replace(label_replace(kube_namespace_labels, "environment","$1", "label_gems_cloudminds_com_environment", "(.*)"), "project","$1", "label_gems_cloudminds_com_project", "(.*)"), "tenant","$1", "label_gems_cloudminds_com_tenant", "(.*)"))without(job, label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant)
+        - record: gems_namespace_cpu_usage_cores
           expr: |
             sum(gems_container_cpu_usage_cores)by(namespace)
-            * on(namespace) group_left(label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant) 
-            kube_namespace_labels
-        - record: gems_namespace_with_environment_memory_usage_bytes
+            * on(namespace) group_left(environment, project, tenant) 
+            gems_namespace_labels
+        - record: gems_namespace_memory_usage_bytes
           expr: |
             sum(gems_container_memory_usage_bytes)by(namespace)
-            * on(namespace) group_left(label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant) 
-            kube_namespace_labels
-        - record: gems_namespace_with_environment_network_receive_bps
+            * on(namespace) group_left(environment, project, tenant) 
+            gems_namespace_labels
+        - record: gems_namespace_network_receive_bps
           expr: |
             sum(gems_container_network_receive_bps)by(namespace)
-            * on(namespace) group_left(label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant) 
-            kube_namespace_labels
-        - record: gems_namespace_with_environment_network_send_bps
+            * on(namespace) group_left(environment, project, tenant) 
+            gems_namespace_labels
+        - record: gems_namespace_network_send_bps
           expr: |
             sum(gems_container_network_send_bps)by(namespace)
-            * on(namespace) group_left(label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant) 
-            kube_namespace_labels
-        - record: gems_namespace_with_environment_pvc_usage_bytes
+            * on(namespace) group_left(environment, project, tenant) 
+            gems_namespace_labels
+        - record: gems_namespace_pvc_usage_bytes
           expr: |
             sum(gems_pvc_usage_bytes)by(namespace)
-            * on(namespace) group_left(label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant) 
-            kube_namespace_labels
+            * on(namespace) group_left(environment, project, tenant) 
+            gems_namespace_labels
 
         # cert
         - record: gems_cert_expiration_remain_seconds
