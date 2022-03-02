@@ -1,4 +1,6 @@
-<center><img src="https://github.com/kubegems/.github/blob/master/static/image/kubegem-logo.jpg?raw=true" width="30%" height="30%"></center>
+<p align="center">
+<img src="https://github.com/kubegems/.github/blob/master/static/image/kubegem-logo.jpg?raw=true" width="30%" height="30%">
+</p>
 
 Installer Operator powered by [Ansible-Operator(OperatorSDK)](https://sdk.operatorframework.io/docs/overview/), it contains all the manifests needed to deploy kubegems.
 
@@ -127,7 +129,7 @@ ansible-playbook test.yaml
 
 The environments of ansbile-playbook runtime at `roles/installer/defaults/main.yaml`, you can modity it after some task changed.
 
-> tips: Do not include this file in .dockerignore.
+> tips: Do not exclude this file in .dockerignore.
 
 
 for more information, see https://sdk.operatorframework.io/docs/building-operators/ansible/development-tips/ 
