@@ -20,7 +20,7 @@ spec:
   image: {{ global.repository | default('docker.io/kubegems') }}/prometheus:{{ core_plugins.monitoring.operator.prometheus.image.tag | default('2.27.1-debian-10-r16') }}
   externalUrl: http://prometheus.gemcloud-minitoring-system:9090/
   externalLabels: 
-    k8s_cloud_cluster: {{ cluster_name }}
+    cluster: {{ cluster_name }}
   paused: false
   logLevel: info
   logFormat: logfmt
