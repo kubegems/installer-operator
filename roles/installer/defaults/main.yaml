@@ -189,6 +189,9 @@ core_plugins:
       # Upstream used by logs whitch fluentbit collect, forward to fluentdpstream uspfluentbit and forwarded to flunetd
       enable_upstream: false
       fluentbit:
+        # Set the buffer size for HTTP client when reading responses from Kubernetes API server. 
+        # The value must be according to the Unit Size specification.
+        #buffer: 256k
         resources:
           cpu: "2"
           memory: 1Gi
