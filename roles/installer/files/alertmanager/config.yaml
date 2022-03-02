@@ -22,7 +22,12 @@ spec:
     - name: "null"
     - name: gemcloud-default-webhook
       webhookConfigs:
-        - url: http://gems-agent.gemcloud-system:8041/alert
+        - httpConfig:
+            tlsConfig:
+              ca: {}
+              cert: {}
+              insecureSkipVerify: true
+          url: https://gems-agent.gemcloud-system:8041/alert
   route:
     continue: true
     groupBy:

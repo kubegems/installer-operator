@@ -15,7 +15,7 @@ global:
 
   # Kubegems uses the built-in local-path-provisioner by defaults.
   # If you need to set a personalised storage class for the component, please configure it in the field "<component>.operator.persisten.storageclass".
-  storageclass: local-path
+  #storageclass: local-path
 
 core_plugins:
   kubegems_local:
@@ -189,6 +189,9 @@ core_plugins:
       # Upstream used by logs whitch fluentbit collect, forward to fluentdpstream uspfluentbit and forwarded to flunetd
       enable_upstream: false
       fluentbit:
+        # Set the buffer size for HTTP client when reading responses from Kubernetes API server. 
+        # The value must be according to the Unit Size specification.
+        #buffer: 256k
         resources:
           cpu: "2"
           memory: 1Gi
@@ -204,7 +207,7 @@ core_plugins:
           memory: 4Gi
         persistent:
           size: 100Gi
-          storageclass: alibabacloud-cnfs-nas
+          #storageclass: alibabacloud-cnfs-nas
       loki:
         enabled: true
         #image:
@@ -215,7 +218,7 @@ core_plugins:
         #  memory: "8Gi"
         persistent:
           size: 500Gi
-          storageclass: alibabacloud-cnfs-nas
+          #storageclass: alibabacloud-cnfs-nas
         # If you need to interface to an external loki service, disealed loki and configured the host field
         # Tips: host only support <ipaddress>:<ports>
         #external_host: 172.168.0.1:3100

@@ -124,6 +124,6 @@ spec:
           storage: "{{ core_plugins.logging.operator.loki.persistent.size | default('20Gi') }}"
       {% if core_plugins.logging.operator.loki.persistent.storageclass is defined %}
       storageClassName: {{ core_plugins.logging.operator.loki.persistent.storageclass }}
-      {% else %}
+      {% elif global.storageclass is defined %}}
       storageClassName: {{ global.storageclass | default('local-path') }}
       {% endif %}

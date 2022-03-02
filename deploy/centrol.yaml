@@ -288,10 +288,17 @@ spec:
         env:
         - name: ANSIBLE_GATHERING
           value: explicit
+        # kuebgems doc service, same as https://kubegems.io
         - name: ENABLED_KUBEGEMS_DOCS
           value: "off"
+        # installer operator running mode, default is "worker".
+        # centrol willb be install kubegems-[service,msgbus,worker] and it's dependencies service.
         - name: RUNNING_MODE 
           value: "centrol"
+        # LOCATION: define the installation location of kubegems. "inside" is default, it means deploying kubegems inside a kubernetes cluster.
+        # This is our recommended installation type, if you are using docker-compose to install kubegems, you should change it to "outside". 
+        # with "outside" mode, the installer will not install kubegems core services, except for argo-cd, cent-manager, etc. 
+        # You can findout more informations at roles/tasks/main.yml.
         - name: LOCATION
           value: "inside"
         image: kubegems/installer-operator:v2.3
@@ -344,35 +351,5 @@ metadata:
   namespace: kubegems-installer
 data:
   config.yaml: |-
-    #system:
-    #  jwtExpire: 24h
-    #redis:
-    #  password: "gems-redis-password"
-    #  addr: gems-redis:6379
-    #  db: 0
-    #git:
-    #  host: http://gems-gitea:3000
-    #  username: root
-    #  password: Cloudminds1688
-    #argo:
-    #  addr: http://argocd-server.gemcloud-workflow-system
-    #  username: admin
-    #  password: Cloudminds1688
-    #mysql:
-    #  initdata: false
-    #  addr: gems-mysql:3306
-    #  username: root
-    #  password: GhghVoeafevku
-    #  db: gemcloud
-    #  options:
-    #    charset: utf8mb4_general_ci
-    #    parseTime: "True"
-    #    collation: utf8mb4_general_ci
-    #    loc: Local
-    #appstore:
-    #  chartRepoUrl: http://gems-chartmuseum:8030
-    #  chartsTmp: chartstmp
-    #audit:
-    #  status: "on"
-    #installer:
-    #  version: v2.3
+    # kubegem's configuration read from environment .
+    # and it is not necessary nolonger.

@@ -85,6 +85,5 @@
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
-    - kubegems/dashboard/configmap.yaml
     - kubegems/dashboard/deploy.yaml
     - kubegems/dashboard/service.yaml
