@@ -111,6 +111,19 @@
     - istio/envoy.monitor.yaml
     - istio/istiod.monitor.yaml
 
+- name: Core Plugins | Metrics | GPU Manager Metrics
+  when: 
+    - core_plugins.monitoring.operator.prometheus is defined
+    - core_plugins.monitoring.operator.prometheus.enabled
+    - kubernetes_plugins.gpu_manager is defined
+    - kubernetes_plugins.gpu_manager.enabled
+  ignore_errors: true
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) | from_yaml }}"
+  with_items:
+    - tke_gpu_manager/monitor.yaml
+
 - name: Core Plugins | Pormetheus | External Service
   when: 
     - core_plugins.monitoring.operator.prometheus is defined
