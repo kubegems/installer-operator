@@ -37,6 +37,7 @@ spec:
       Docker_Mode: "false"
       Mem_Buf_Limit: 256M
       Buffer_Chunk_Size: {{ core_plugins.loggiMg.operator.fluentbit.buffer | default('256k') }}
+      Buffer_Max_Size: {{ core_plugins.loggiMg.operator.fluentbit.buffer | default('256k') }}
       {% if runtime == "docker" %}
       Parser: docker
       {% else %}

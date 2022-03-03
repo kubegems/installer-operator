@@ -301,7 +301,7 @@ spec:
         # You can findout more informations at roles/tasks/main.yml.
         - name: LOCATION
           value: "inside"
-        image: kubegems/installer-operator:v2.3
+        image: kubegems/installer-operator:v2.3.0
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
