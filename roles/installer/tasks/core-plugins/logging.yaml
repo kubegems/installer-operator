@@ -32,14 +32,14 @@
 
 - name: Core Plugins | Loki Recording Rules Configuration
   community.kubernetes.k8s:
-    state: '{{ "present" if core_plugins.logging.operator.loki.enabled else "absent" }}'
+    state: '{{ "present" if core_plugins.logging.enabled and core_plugins.logging.operator.loki.enabled else "absent" }}'
     definition: "{{ lookup('file', item) | from_yaml }}"
   with_items:
     - loki-stack/recording_rules.yaml
 
 - name: Core Plugins | Loki Stack
   community.kubernetes.k8s:
-    state: '{{ "present" if core_plugins.logging.operator.loki.enabled else "absent" }}'
+    state: '{{ "present" if core_plugins.logging.enabled and core_plugins.logging.operator.loki.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - loki-stack/redis/statefulset.yaml

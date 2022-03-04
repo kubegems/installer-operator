@@ -13,7 +13,11 @@ spec:
   selector:
     matchLabels:
       app: "gems-elasticsearch"
+  {% if core_plugins.jaeger.operator.elasticsearch.mode == cluster %}
   replicas: 3
+  {% else %}
+  replicas: 1
+  {% endif %}
   podManagementPolicy: Parallel
   updateStrategy:
     type: RollingUpdate
@@ -160,8 +164,13 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
+          {% if core_plugins.jaeger.operator.elasticsearch.mode == cluster %}    
           - name: cluster.initial_master_nodes
             value: "gems-elasticsearch-0,gems-elasticsearch-1,gems-elasticsearch-2,"
+          {% else %}
+          - name: cluster.initial_master_nodes
+            value: "gems-elasticsearch-0"
+          {% endif %}
           - name: discovery.seed_hosts
             value: "gems-elasticsearch-headless"
           - name: cluster.name
