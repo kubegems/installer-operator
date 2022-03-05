@@ -73,8 +73,9 @@ spec:
           replicas: 1
           #debug: false
           persistent:
-            size: 20Gi
-            # storageclass: 
+            #size: 10Gi
+            #Required persistent volume which type is RWX.
+            #storageclass: 
         gems_msgbus:
           replicas: 1
           #debug: false
@@ -82,8 +83,9 @@ spec:
           replicas: 1
           #debug: false
           persistent:
-            size: 20Gi
-            # storageclass: 
+            #size: 10Gi
+            #Required persistent volume which type is RWX.
+            #storageclass: 
       status:
         deployment:
         - gems-service
