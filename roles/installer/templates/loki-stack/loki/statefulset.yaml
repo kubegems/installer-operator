@@ -121,9 +121,11 @@ spec:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: "{{ core_plugins.logging.operator.loki.persistent.size | default('20Gi') }}"
+          storage: "{{ core_plugins.logging.operator.loki.persistent.size | default('50Gi') }}"
       {% if core_plugins.logging.operator.loki.persistent.storageclass is defined %}
       storageClassName: {{ core_plugins.logging.operator.loki.persistent.storageclass }}
-      {% elif global.storageclass is defined %}}
-      storageClassName: {{ global.storageclass | default('local-path') }}
+      {% elif global.storageclass is defined %}
+      storageClassName: {{ global.storageclass }}
+      {% else %}
+      storageClassName: local-path 
       {% endif %}

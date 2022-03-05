@@ -25,6 +25,7 @@
   community.kubernetes.k8s:
     state: '{{ "present" if core_plugins.logging.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
+  ignore_errors: true
   with_items:
     - logging-operator/logging.yaml
     - logging-operator/flows.yaml

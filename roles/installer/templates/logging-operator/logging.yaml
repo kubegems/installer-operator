@@ -87,13 +87,15 @@ spec:
           resources:
             requests:
               {% if core_plugins.logging.operator.fluentd.persistent.size is defined %}
-              storage: {{ core_plugins.logging.operator.fluentd.persistent.size | default('20Gi')}}
+              storage: {{ core_plugins.logging.operator.fluentd.persistent.size | default('10Gi') }}
               {% endif %}
           volumeMode: Filesystem
           {% if core_plugins.logging.operator.fluentd.persistent.storageclass is defined %}
           storageClassName: {{ core_plugins.logging.operator.fluentd.persistent.storageclass }}
           {% elif global.storageclass is defined %}
-          storageClassName: {{ global.storageclass | default('local-path') }}
+          storageClassName: {{ global.storageclass }}
+          {% else %}
+          storageClassName: local-path
           {% endif %}
     configReloaderImage:
       {% if global.imagepullsecret is defined %}
