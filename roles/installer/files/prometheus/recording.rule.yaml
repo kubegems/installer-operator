@@ -147,7 +147,7 @@ spec:
 
         # namespace、environment、project、tenant
         - record: gems_namespace_labels
-          expr: sum(label_replace(label_replace(label_replace(kube_namespace_labels, "environment","$1", "label_gems_cloudminds_com_environment", "(.*)"), "project","$1", "label_gems_cloudminds_com_project", "(.*)"), "tenant","$1", "label_gems_cloudminds_com_tenant", "(.*)"))without(job, label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant)
+          expr: sum(label_replace(label_replace(label_replace(kube_namespace_labels, "environment","$1", "label_gems_kubegems_io_environment", "(.*)"), "project","$1", "label_gems_kubegems_io_project", "(.*)"), "tenant","$1", "label_gems_kubegems_io_tenant", "(.*)"))without(job, label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant)
         - record: gems_namespace_cpu_usage_cores
           expr: |
             sum(gems_container_cpu_usage_cores)by(namespace)
@@ -203,20 +203,20 @@ spec:
         - record: gems_logging_level_error
           expr: |
             sum(logging_level_error)by(namespace)
-            * on(namespace) group_left(label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant) 
+            * on(namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
             kube_namespace_labels
         - record: gems_eventer
           expr: |
             sum(eventer)by(type,metadata_namespace)
-            * on(metadata_namespace) group_left(label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant) 
+            * on(metadata_namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
             kube_namespace_labels
         - record: gems_eventer_component
           expr: |
             sum(eventer_component)by(source_component,metadata_namespace)
-            * on(metadata_namespace) group_left(label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant) 
+            * on(metadata_namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
             kube_namespace_labels
         - record: gems_eventer_kind
           expr: |
             sum(eventer_kind)by(involvedObject_kind,metadata_namespace)
-            * on(metadata_namespace) group_left(label_gems_cloudminds_com_environment, label_gems_cloudminds_com_project, label_gems_cloudminds_com_tenant) 
+            * on(metadata_namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
             kube_namespace_labels
