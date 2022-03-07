@@ -45,7 +45,7 @@ spec:
       status:
         deployment:
         - gems-agent
-        - gems-controller
+        - gems-controller-manager
         required: true
   
     kubegems_dashboard:
