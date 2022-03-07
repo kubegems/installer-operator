@@ -37,8 +37,8 @@ spec:
         imagePullPolicy: IfNotPresent
         args:
         - msgbus
-        - --jwt-jwtcert=/certs/jwt/tls.crt
-        - --jwt-jwtkey=/certs/jwt/tls.key
+        - --jwt-cert=/certs/jwt/tls.crt
+        - --jwt-key=/certs/jwt/tls.key
         - --system-listen=:8080
         env:
         - name: MYSQL_PASSWORD
