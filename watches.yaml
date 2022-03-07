@@ -3,5 +3,5 @@
 - version: v1beta1
   group: plugins.kubegems.io
   kind: Installer
-  playbook: playbooks/installer.yml
+  role: installer
 #+kubebuilder:scaffold:watch

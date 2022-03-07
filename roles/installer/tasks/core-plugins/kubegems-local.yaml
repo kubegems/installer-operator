@@ -1,6 +1,6 @@
 ---
 - name: Core Plugins | KubeGems Agent 
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -14,28 +14,28 @@
     - kubegems/agent/service.yaml
 
 - name: Core Plugins | KubeGems Controller | CRDs
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_fileglob:
     - "templates/kubegems/controller/crds/*.yaml"
 
 - name: Core Plugins | KubeGems Controller 
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_fileglob:
     - "templates/kubegems/controller/*.yaml"
 
 - name: Core Plugins | Basic Gateway | CRDs
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - gateway/crd/crd.yaml
 
 - name: Core Plugins | Basic Gateway 
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -53,7 +53,7 @@
     - gateway/service.yaml
 
 - name: Core Plugins | Argo Rollouts | CRDs
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -64,7 +64,7 @@
     - argo-rollouts/v1.1.0/crds/rollouts.yaml
 
 - name: Core Plugins | Argo Rollouts 
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.argo_rollouts.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -79,7 +79,7 @@
     - argo-rollouts/v1.1.0/service.yaml
 
 - name: Core Plugins | Argo Rollouts AnalysisTemplate
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.argo_rollouts.enabled else "absent" }}'
     definition: "{{ lookup('file', item) | from_yaml }}"
   ignore_errors: yes

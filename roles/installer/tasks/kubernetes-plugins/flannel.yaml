@@ -1,6 +1,6 @@
 - name: Kubernetes Plugins | Flannel
   when: kubernetes_plugins.flannel is defined
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     #state: '{{"present" if kubernetes_plugins.flannel.enabled else ( "absent" if kubernetes_plugins.flannel.force_delete else "present" )}}'
     state: '{{ "present" if kubernetes_plugins.flannel.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"

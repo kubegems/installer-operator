@@ -1,5 +1,5 @@
 - name: Kubernetes Plugins | Grafana Operator | CRDs
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present 
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -8,7 +8,7 @@
     - grafana/operator/crds/grafanas.yaml
 
 - name: Kubernetes Plugins | Grafana Operator 
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if kubernetes_plugins.grafana.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -21,7 +21,7 @@
     - grafana/operator/operator.yaml
 
 - name: Kubernetes Plugins | Grafana
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if kubernetes_plugins.grafana.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   ignore_errors: true
@@ -31,7 +31,7 @@
 - name: Kubernetes Plugins | Grafana | Grafana Datasource Prometheus
   when: 
     - kubernetes_plugins.grafana.enabled
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.monitoring.operator.prometheus is defined and core_plugins.monitoring.operator.prometheus.enabled else "absent" }}'
     definition: "{{ lookup('file', item) | from_yaml }}"
   ignore_errors: true
@@ -39,7 +39,7 @@
     - grafana/datasource/prometheus.yaml
 
 - name: Kubernetes Plugins | Grafana | Grafana Datasource Loki
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.logging.operator.loki is defined and core_plugins.logging.operator.loki.enabled else "absent" }}'
     definition: "{{ lookup('file', item) | from_yaml }}"
   ignore_errors: true
@@ -47,7 +47,7 @@
     - grafana/datasource/loki.yaml
 
 - name: Kubernetes Plugins | Grafana | Grafana Dashboard
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if kubernetes_plugins.grafana.enabled else "absent" }}'
     definition: "{{ lookup('file', item) | from_yaml }}"
   ignore_errors: true

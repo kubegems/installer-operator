@@ -1,13 +1,13 @@
 ---
 - name: Core Plugins | Create Namespace Cert Manager
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     name: cert-manager
     api_version: v1
     kind: Namespace
     state: present
 
 - name: Core Plugins | Cert Manager | CRDs
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -19,7 +19,7 @@
     - cert-manager/crds/orders.yaml
 
 - name: Core Plugins | Cert Manager | RBACs
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -56,7 +56,7 @@
     - cert-manager/rbac/rolebinding-webhook.yaml
 
 - name: Core Plugins | Cert Manager Workloads
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
     wait: yes
@@ -71,7 +71,7 @@
     - cert-manager/deploy-webhook.yaml
 
 - name: Core Plugins | Cert Manager Service
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:

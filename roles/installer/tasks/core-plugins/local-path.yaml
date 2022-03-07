@@ -1,5 +1,5 @@
 - name: Kubernetes Plugins | Local Path Provisioner
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if kubernetes_plugins.local_path.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -10,7 +10,7 @@
     - storages/local-path/storageclass.yaml
 
 - name: Kubernetes Plugins | Local Path Provisioner
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if kubernetes_plugins.local_path.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
     wait: yes
@@ -24,7 +24,7 @@
 
 # apigroup: snapshot.storage.k8s.io/v1
 - name: Kubernetes Plugins | Snapshot | CRDs
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:

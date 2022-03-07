@@ -1,14 +1,14 @@
 ---
 - name: Core Plugins| Create Namespace Observability
   when: core_plugins.jaeger.enabled
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     name: observability
     api_version: v1
     kind: Namespace
     state: present
 
 - name: Core Plugins | Observability ElasticSearch 
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.jaeger.operator.elasticsearch.enabled and core_plugins.jaeger.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -18,7 +18,7 @@
     
 - name: Core Plugins | Observability Jaeger | CRDs
   when: core_plugins.jaeger.enabled is defined
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -26,7 +26,7 @@
 
 - name: Core Plugins | Observability Jaeger | Operator
   when: core_plugins.jaeger.enabled is defined
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.jaeger.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -39,7 +39,7 @@
 
 - name: Core Plugins | Observability Jaeger 
   ignore_errors: true
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.jaeger.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:

@@ -1,6 +1,6 @@
 - name: Kubernetes Plugins | Calico | CRDs
   when: kubernetes_plugins.calico is defined
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     #state: '{{"present" if kubernetes_plugins.calico.enabled else ( "absent" if kubernetes_plugins.calico.force_delete else "present" )}}'
     #state: '{{"present" if kubernetes_plugins.calico.enabled else "absent" }}'
     state: present
@@ -24,7 +24,7 @@
 
 - name: Kubernetes Plugins | Calico 
   when: kubernetes_plugins.calico is defined
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if kubernetes_plugins.calico.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:

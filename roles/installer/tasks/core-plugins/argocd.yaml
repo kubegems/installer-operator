@@ -1,6 +1,6 @@
 - name: Core Plugins | Argocd | CRDs
   when: mode == "centrol"
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -9,7 +9,7 @@
 
 - name: Core Plugins | Argocd 
   when: mode == "centrol"
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.argocd.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:

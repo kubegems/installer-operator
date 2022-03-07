@@ -8,7 +8,7 @@
 
 # -- TODO: Check kubernetes default StorageClass
 #- name: Get Lists of StorageClass
-#  community.kubernetes.k8s_info:
+#  kubernetes.core.k8s_info:
 #    api_version: "storage.k8s.io/v1"
 #    kind: storageclasses
 #  register: sc_list_raw
@@ -22,42 +22,42 @@
 #  register: default_storageclass
 
 - name: Core Plugins| Create Namespace Gemcloud Monitoring System
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     name: gemcloud-monitoring-system
     api_version: v1
     kind: Namespace
     state: present
 
 - name: Core Plugins| Create Namespace Gemcloud Logging System
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     name: gemcloud-logging-system
     api_version: v1
     kind: Namespace
     state: present
 
 - name: Core Plugins| Create Namespace Gemcloud Workflow System
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     name: gemcloud-workflow-system
     api_version: v1
     kind: Namespace
     state: present
 
 - name: Core Plugins| Create Namespace Gemcloud Gateway System
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     name: gemcloud-gateway-system
     api_version: v1
     kind: Namespace
     state: present
 
 - name: Core Plugins| Create Namespace Gemcloud System
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     name: gemcloud-system
     api_version: v1
     kind: Namespace
     state: present
     
 - name: Kubernetes Plugins | Namespace local-path-storage
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     name: local-path-storage
     api_version: v1
     kind: Namespace

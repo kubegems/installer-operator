@@ -1,7 +1,7 @@
 ---
 - name: Core Plugins| Create Namespace Istio System
   when: core_plugins.istio.enabled
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition:
       apiVersion: v1
@@ -15,14 +15,14 @@
 
 - name: Core Plugins | Istio CRDs
   when: core_plugins.istio.enabled
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - istio/operator/crds/istiooperator.yaml
 
 - name: Core Plugins | Istio Operator
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.istio.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
     wait_condition:
@@ -38,7 +38,7 @@
     - Scale up KubeGems Controller
 
 - name: Core Plugins | Istio 
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.istio.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
     merge_type: strategic-merge
@@ -47,7 +47,7 @@
     - istio/istio.yaml
 
 - name: Core Plugins | Kiali 
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.istio.operator.kiali.enabled and core_plugins.istio.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:

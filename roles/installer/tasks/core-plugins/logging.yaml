@@ -1,6 +1,6 @@
 - name: Core Plugins | Logging Operator | CRDs
   when: core_plugins.logging.enabled
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -11,7 +11,7 @@
     - logging-operator/operator/crds/clusteroutputs.yaml 
 
 - name: Core Plugins | Logging Operator Service
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.logging.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -22,7 +22,7 @@
     - logging-operator/operator/service.yaml
 
 - name: Core Plugins | Logging Operator Collector
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.logging.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   ignore_errors: true
@@ -32,14 +32,14 @@
     - logging-operator/clusteroutputs.yaml
 
 - name: Core Plugins | Loki Recording Rules Configuration
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.logging.enabled and core_plugins.logging.operator.loki.enabled else "absent" }}'
     definition: "{{ lookup('file', item) | from_yaml }}"
   with_items:
     - loki-stack/recording_rules.yaml
 
 - name: Core Plugins | Loki Stack
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: '{{ "present" if core_plugins.logging.enabled and core_plugins.logging.operator.loki.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
