@@ -66,11 +66,11 @@ spec:
           protocol: TCP
         resources:
           limits:
-            cpu: "{{ core_plugins.logging.operator.loki.resources.cpu | default('4')}}"
-            memory: "{{ core_plugins.logging.operator.loki.resources.memory | default('8Gi')}}"
+            cpu: "{{ core_plugins.logging.operator.loki.resources.cpu | default('2')}}"
+            memory: "{{ core_plugins.logging.operator.loki.resources.memory | default('4Gi')}}"
           requests:
-            cpu: "500m"
-            memory: "1Gi"
+            cpu: "100m"
+            memory: "256Mi"
         volumeMounts:
         - name: loki-config
           mountPath: /etc/loki/

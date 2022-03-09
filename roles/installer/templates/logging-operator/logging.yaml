@@ -136,8 +136,8 @@ spec:
         cpu: {{ core_plugins.logging.operator.fluentd.resources.cpu | default('2000m') }}
         memory: {{ core_plugins.logging.operator.fluentd.resources.memory | default('4Gi') }}
       requests:
-        cpu: 200m
-        memory: 1Gi
+        cpu: 100m
+        memory: 256Mi
     scaling:
       replicas: {{ core_plugins.logging.operator.fluentd.replicas | default('2') }}
     security:

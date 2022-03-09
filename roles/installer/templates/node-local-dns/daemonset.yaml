@@ -39,12 +39,8 @@ spec:
       - name: node-cache
         image: "{{ global.repository | default('docker.io/kubegems')}}/k8s-dns-node-cache:{{ kubernetes_plugins.node_local_dns.details.version | default('v1.15.14')}}"
         resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 25m
-            memory: 5Mi
+          limits: {}
+          requests: {}
         args: [ "-localip", "169.254.20.10", "-conf", "/etc/coredns/Corefile" ]
         securityContext:
           privileged: true

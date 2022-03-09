@@ -88,7 +88,7 @@ spec:
             memory: 1Gi
           requests:
             cpu: 100m
-            memory: 200Mi
+            memory: 128Mi
         volumeMounts:
         - mountPath: /certs/jwt
           name: gems-jwt-certs

@@ -62,8 +62,8 @@ spec:
             cpu: 1000m
             memory: 1Gi
           requests:
-            cpu: 200m
-            memory: 512Mi
+            cpu: 100m
+            memory: 128Mi
         volumeMounts:
         - mountPath: /etc/localtime
           name: timezone
