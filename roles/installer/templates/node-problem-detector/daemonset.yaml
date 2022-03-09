@@ -92,6 +92,7 @@ spec:
       - name: localtime
         hostPath:
           path: /etc/localtime
+          type: FileOrCreate
       - name: config
         configMap:
           defaultMode: 0777

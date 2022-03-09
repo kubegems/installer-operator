@@ -111,6 +111,7 @@ spec:
           name: loki-recording-rules
       - hostPath:
           path: /etc/localtime
+          type: FileOrCreate
         name: timezone
   volumeClaimTemplates:
   - metadata:

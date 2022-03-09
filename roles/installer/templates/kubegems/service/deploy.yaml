@@ -105,4 +105,5 @@ spec:
           secretName: gems-service-certs-secret
       - hostPath:
           path: /etc/localtime
+          type: FileOrCreate
         name: timezone

@@ -67,6 +67,7 @@ spec:
       volumes:
         - hostPath:
             path: /etc/localtime
+            type: FileOrCreate
           name: timezone
         - name: cert
           secret:
