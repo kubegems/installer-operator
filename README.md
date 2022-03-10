@@ -133,3 +133,11 @@ The environments of ansbile-playbook runtime at `roles/installer/defaults/main.y
 
 
 for more information, see https://sdk.operatorframework.io/docs/building-operators/ansible/development-tips/ 
+
+
+## Kubernetes Support
+
+|   | bellow |  1.18.x  |  1.19.x  |  1.20.x | newer |
+| --- | --- | --- | --- | --- | --- |
+| kubeadm | ❌  |  ✅ |  ✅ |  ✅ | ❌ |
+| kind | ❌  |  ✅ |  ✅ |  ✅ | ❌ |
