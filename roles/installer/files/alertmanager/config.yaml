@@ -186,6 +186,14 @@ spec:
           - name: gems_namespace
             value: gemcloud-monitoring-system
           - name: gems_alertname
+            value: ClusterComponentCertExpirySoon
+        receiver: gemcloud-default-webhook
+        repeatInterval: 10m
+      - continue: true
+        matchers:
+          - name: gems_namespace
+            value: gemcloud-monitoring-system
+          - name: gems_alertname
             value: GemsPluginFailed
         receiver: gemcloud-default-webhook
         repeatInterval: 10m
