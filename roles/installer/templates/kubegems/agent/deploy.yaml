@@ -52,8 +52,10 @@ spec:
               cpu: 1000m
               memory: 2Gi
           livenessProbe:
-            tcpSocket:
+            httpGet:
               port: 8041
+              scheme: HTTPS
+              path: /healthz
           ports:
             - containerPort: 8041
               name: http-8041
