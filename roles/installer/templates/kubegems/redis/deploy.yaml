@@ -59,7 +59,7 @@ spec:
           value: "no"
         - name: REDIS_PORT
           value: "6379"
-        image: "{{ global.repository | default('docker.io') }}/redis:6.0.10"
+        image: "{{ global.repository | default('docker.io/kubegems') }}/redis:6.0.10"
         imagePullPolicy: IfNotPresent
         name: gems-redis
         livenessProbe:

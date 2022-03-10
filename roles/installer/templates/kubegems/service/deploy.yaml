@@ -11,8 +11,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: gems-service
-  strategy:
-    type: Recreate
   template: 
     metadata:
       labels:

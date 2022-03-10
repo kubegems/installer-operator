@@ -23,7 +23,7 @@ spec:
       {% endif %}
       containers:
         - name: gems-agent
-          image: "{{ global.repository | default('docker.io')}}/kubegems:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
+          image: "{{ global.repository | default('docker.io/kubegems')}}/kubegems:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
           imagePullPolicy: IfNotPresent
           args: 
           - agent

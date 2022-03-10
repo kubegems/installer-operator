@@ -34,7 +34,7 @@ spec:
               weight: 1
         nodeAffinity:
       containers:
-      - image: "{{ global.repository | default('docker.io') }}/dashboard:{{ core_plugins.kubegems_dashboard.details.version }}"
+      - image: "{{ global.repository | default('docker.io/kubegems') }}/dashboard:{{ core_plugins.kubegems_dashboard.details.version }}"
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3

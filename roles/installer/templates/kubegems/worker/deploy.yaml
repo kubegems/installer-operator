@@ -32,7 +32,7 @@ spec:
               weight: 1
         nodeAffinity:
       containers:
-      - image: "{{ global.repository | default('docker.io') }}/kubegems:{{ core_plugins.kubegems_centrol.details.version | default('latest') }}"
+      - image: "{{ global.repository | default('docker.io/kubegems') }}/kubegems:{{ core_plugins.kubegems_centrol.details.version | default('latest') }}"
         imagePullPolicy: IfNotPresent
         args: 
         - worker
