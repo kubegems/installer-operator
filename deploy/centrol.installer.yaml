@@ -20,7 +20,7 @@ spec:
     # imagepullsecret: kubegems
   
     # Kubegems uses the built-in local-path-provisioner by defaults.
-    # If you need to set a personalised storage class for the component, please configure it in the field "<component>.operator.persisten.storageclass".
+    # If you need to set a personalised storageclass for the component, please configure it in the field "<component>.operator.persisten.storageclass".
     #storageclass: local-path
   
   core_plugins:
@@ -75,7 +75,7 @@ spec:
           persistent:
             #size: 10Gi
             #Required persistent volume which type is RWX.
-            #storageclass: 
+            #storageclass: local-path
         gems_msgbus:
           replicas: 1
           #debug: false
@@ -85,7 +85,7 @@ spec:
           persistent:
             #size: 10Gi
             #Required persistent volume which type is RWX.
-            #storageclass: 
+            #storageclass:local-path
       status:
         deployment:
         - gems-service
@@ -113,7 +113,7 @@ spec:
           persistent:
             size: 50Gi
             # Specify stralgeclass to use, local-path was default value
-            # storageclass: alibabacloud-cnfs-nas
+            # storageclass: local-path
   
           # If you need to interface to an external alertmanager service, disealed alertmanager and configured the host field
           # Tips: host only support <ipaddress>:<ports>
@@ -127,7 +127,7 @@ spec:
           persistent:
             size: 10Gi
             # Specify stralgeclass to use, local-path was default value
-            # storageclass: 
+            # storageclass: local-path
   
           # If you need to interface to an external alertmanager service, disealed alertmanager and configured the host field
           # Tips: host only support <ipaddress>:<ports>
@@ -214,7 +214,7 @@ spec:
             memory: 2Gi
           persistent:
             size: 10Gi
-            #storageclass: alibabacloud-cnfs-nas
+            #storageclass: local-path
         loki:
           enabled: true
           #image:
@@ -225,7 +225,7 @@ spec:
           #  memory: "8Gi"
           persistent:
             size: 100Gi
-            #storageclass: alibabacloud-cnfs-nas
+            #storageclass: local-path
           # If you need to interface to an external loki service, disealed loki and configured the host field
           # Tips: host only support <ipaddress>:<ports>
           #external_host: 172.168.0.1:3100
@@ -288,7 +288,7 @@ spec:
           mode: single
           persistent:
             size: 100Gi
-            # storageclass: alibabacloud-cnfs-nas
+            # storageclass: local-path
   
           # If you need to interface to an external ElasticSearch service, disealed ElasticSearch and configured the external_urls fielda.
           # external_urls: "http://172.16.0.1:9200"
