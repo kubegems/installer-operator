@@ -19,7 +19,6 @@
   ignore_errors: yes
   with_items:
     - prometheus/alerting.rule.yaml
-    - prometheus/logging.rule.yaml
     - alertmanager/config.yaml
 
 - name: Core Plugins | Metrics | Server
@@ -169,4 +168,3 @@
 #  with_items:
 #    - gems/docs/deploy.yaml
 #    - gems/docs/service.yaml
-#
