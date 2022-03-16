@@ -33,7 +33,6 @@
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - kubegems/service/monitor.yaml
-    - kubegems/worker/monitor.yaml
     - argocd/monitor.yaml
     - argocd/monitor-server.yaml
     - argocd/monitor-repo.yaml
