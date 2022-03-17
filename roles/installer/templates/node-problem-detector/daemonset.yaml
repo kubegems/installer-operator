@@ -46,12 +46,8 @@ spec:
           name: metrics
           protocol: TCP
         resources:
-          limits:
-            cpu: 100m
-            memory: 80Mi
-          requests:
-            cpu: 10m
-            memory: 80Mi
+          limits: {}
+          requests: {}
         imagePullPolicy: Always
         securityContext:
           privileged: true
@@ -92,6 +88,7 @@ spec:
       - name: localtime
         hostPath:
           path: /etc/localtime
+          type: FileOrCreate
       - name: config
         configMap:
           defaultMode: 0777

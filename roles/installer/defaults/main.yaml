@@ -24,6 +24,7 @@ core_plugins:
       description: KubeGems本地组件服务,运行在Kubernetes集群内部.
       version: develop
     namespace: gemcloud-system
+    enabled: true
     operator:
       cert_manager:
         version: v1.4.0
@@ -34,7 +35,7 @@ core_plugins:
       gems_agent:
         # replicas: 1
       gems_controller:
-        replicas: 3
+        replicas: 1
     status:
       deployment:
       - gems-agent
@@ -46,6 +47,7 @@ core_plugins:
       catalog: KubeGems
       description: KubeGems用户界面.
       version: develop
+    enabled: true
     namespace: gemcloud-system
     operator:
       replicas: 1
@@ -58,6 +60,7 @@ core_plugins:
       catalog: KubeGems
       description: KubeGems集群控制中心组件服务.
       version: develop
+    enabled: true
     namespace: gemcloud-system
     operator:
       gems_service:
@@ -80,7 +83,6 @@ core_plugins:
       - gems-service
       - gems-msgbus
       - gems-worker
-      required: true
 
   monitoring:
     details:
@@ -99,9 +101,9 @@ core_plugins:
           tag: 2.27.1-debian-10-r16
         resources:
           cpu: 4000m
-          memory: 16Gi
+          memory: 8Gi
         persistent:
-          size: 400Gi
+          size: 50Gi
           # Specify stralgeclass to use, local-path was default value
           # storageclass: alibabacloud-cnfs-nas
 
@@ -123,7 +125,6 @@ core_plugins:
         # Tips: host only support <ipaddress>:<ports>
         #external_host: 172.16.0.1:9093
     status:
-      required: true
       deployment:
       - prometheus-operator
 
@@ -148,7 +149,6 @@ core_plugins:
     status:
       deployment:
       - kube-state-metrics
-      required: true
 
   argocd:
     details:
@@ -164,7 +164,6 @@ core_plugins:
       - argocd-redis
       - argocd-repo-server
       - argocd-server
-      required: true
 
   argo_rollouts:
     details:
@@ -203,10 +202,10 @@ core_plugins:
         # The replicas of flunetd
         replicas: 2
         resources:
-          cpu: "2"
-          memory: 4Gi
+          cpu: "1"
+          memory: 2Gi
         persistent:
-          size: 100Gi
+          size: 10Gi
           #storageclass: alibabacloud-cnfs-nas
       loki:
         enabled: true
@@ -217,7 +216,7 @@ core_plugins:
         #  cpu: "4"
         #  memory: "8Gi"
         persistent:
-          size: 500Gi
+          size: 100Gi
           #storageclass: alibabacloud-cnfs-nas
         # If you need to interface to an external loki service, disealed loki and configured the host field
         # Tips: host only support <ipaddress>:<ports>
@@ -228,7 +227,7 @@ core_plugins:
 
   eventer:
     details:
-      catalog: 日志&事件
+      catalog: 日志中心
       description: Kubernetes集群事件收集器(需开启 logging 套件).
       version: v1.1
     enabled: true
@@ -277,6 +276,8 @@ core_plugins:
         param: 0.5
       elasticsearch:
         enabled: true
+        # Elasticsearch running mode, default is single node. <cluster> mode will be set 3 replicas as a cluster.
+        mode: single
         persistent:
           size: 100Gi
           # storageclass: alibabacloud-cnfs-nas

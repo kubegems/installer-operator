@@ -21,7 +21,7 @@ spec:
       {% endif %}
       containers:
       - name: jaeger-operator
-        image: "{{ global.repository | default('docker.io/kubernetes') }}/jaeger-operator:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}-cluster"
+        image: "{{ global.repository | default('docker.io/kubegems') }}/jaeger-operator:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}-cluster"
         ports:
         - containerPort: 8383
           name: http-metrics

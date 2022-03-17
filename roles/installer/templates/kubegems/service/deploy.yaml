@@ -11,8 +11,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: gems-service
-  strategy:
-    type: Recreate
   template: 
     metadata:
       labels:
@@ -36,8 +34,8 @@ spec:
         image: "{{ global.repository | default('docker.io/kubegems')}}/kubegems:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
         args: 
         - service
-        - --jwt-jwtcert=/certs/jwt/tls.crt
-        - --jwt-jwtkey=/certs/jwt/tls.key
+        - --jwt-cert=/certs/jwt/tls.crt
+        - --jwt-key=/certs/jwt/tls.key
         imagePullPolicy: IfNotPresent
         env:
         - name: MYSQL_PASSWORD
@@ -88,7 +86,7 @@ spec:
             memory: 1Gi
           requests:
             cpu: 100m
-            memory: 200Mi
+            memory: 128Mi
         volumeMounts:
         - mountPath: /certs/jwt
           name: gems-jwt-certs
@@ -105,4 +103,5 @@ spec:
           secretName: gems-service-certs-secret
       - hostPath:
           path: /etc/localtime
+          type: FileOrCreate
         name: timezone

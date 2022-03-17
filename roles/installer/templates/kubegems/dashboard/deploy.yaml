@@ -34,7 +34,7 @@ spec:
               weight: 1
         nodeAffinity:
       containers:
-      - image: "{{ global.repository | default('docker.io') }}/dashboard:{{ core_plugins.kubegems_dashboard.details.version }}"
+      - image: "{{ global.repository | default('docker.io/kubegems') }}/dashboard:{{ core_plugins.kubegems_dashboard.details.version }}"
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -62,11 +62,9 @@ spec:
             cpu: 1000m
             memory: 1Gi
           requests:
-            cpu: 200m
-            memory: 512Mi
+            cpu: 100m
+            memory: 128Mi
         volumeMounts:
-        - mountPath: /etc/nginx/conf.d/
-          name: gems-dashboard-config
         - mountPath: /etc/localtime
           name: timezone
       {% if global.imagepullsecret is defined %}
@@ -75,9 +73,7 @@ spec:
       {% endif %}
       restartPolicy: Always
       volumes:
-      - configMap:
-          name: gems-dashboard-config
-        name: gems-dashboard-config
       - hostPath:
           path: /etc/localtime
+          type: FileOrCreate
         name: timezone

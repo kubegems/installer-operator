@@ -377,6 +377,27 @@ spec:
             gems_alertname: ClusterHighMemoryLoad
             gems_namespace: gemcloud-monitoring-system
             severity: critical
+    - name: ClusterComponentCertExpirySoon
+      rules:
+        - alert: ClusterComponentCertExpirySoon
+          annotations:
+            gems_expr_json: '{"resource":"cluster","rule":"certExpirationRemainTime","unit":"d","labelpairs":{"component":"apiserver"},"compareOp":"\u003c","compareValue":"7"}'
+            message:
+              'ClusterComponentCertExpirySoon: [集群:{{ $externalLabels.cluster }}]
+              [component:{{ $labels.component }}] 集群证书剩余到期时间 触发告警, 当前值: {{ $value | printf
+              "%.1f" }}天'
+            value: '{{ $value | printf "%.1f" }}'
+          expr:
+            gems_agent_cluster_component_cert_expiration_remain_seconds{component=~"apiserver"}
+            / (24 * 60 * 60) < 7
+          for: 1h
+          labels:
+            gems_alert_resource: cluster
+            gems_alert_rule: certExpirationRemainTime
+            gems_alert_scope: system-admin
+            gems_alertname: ClusterComponentCertExpirySoon
+            gems_namespace: gemcloud-monitoring-system
+            severity: critical
     - name: GemsPluginFailed
       rules:
         - alert: GemsPluginFailed

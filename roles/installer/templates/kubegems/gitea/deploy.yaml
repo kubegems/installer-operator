@@ -121,7 +121,7 @@ spec:
               cpu: "4"
               memory: 2Gi
             requests:
-              cpu: 500m
+              cpu: 100m
               memory: 256Mi
           volumeMounts:
             - name: temp

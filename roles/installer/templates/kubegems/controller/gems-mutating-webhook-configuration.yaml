@@ -99,7 +99,7 @@ webhooks:
   name: mutate.label-injector.dev
   rules:
   - apiGroups:
-    - ""
+    - "*"
     apiVersions:
     - '*'
     operations:

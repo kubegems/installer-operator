@@ -13,7 +13,11 @@ spec:
   selector:
     matchLabels:
       app: "gems-elasticsearch"
+  {% if core_plugins.jaeger.operator.elasticsearch.mode == "cluster" %}
   replicas: 3
+  {% else %}
+  replicas: 1
+  {% endif %}
   podManagementPolicy: Parallel
   updateStrategy:
     type: RollingUpdate
@@ -151,17 +155,22 @@ spec:
         resources:
           limits:
             cpu: 2000m
-            memory: 4.5Gi
+            memory: 2.5Gi
           requests:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 200m
+            memory: 256Mi
         env:
           - name: node.name
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
+          {% if core_plugins.jaeger.operator.elasticsearch.mode == "cluster" %}    
           - name: cluster.initial_master_nodes
             value: "gems-elasticsearch-0,gems-elasticsearch-1,gems-elasticsearch-2,"
+          {% else %}
+          - name: cluster.initial_master_nodes
+            value: "gems-elasticsearch-0"
+          {% endif %}
           - name: discovery.seed_hosts
             value: "gems-elasticsearch-headless"
           - name: cluster.name
@@ -169,7 +178,7 @@ spec:
           - name: network.host
             value: "0.0.0.0"
           - name: ES_JAVA_OPTS
-            value: "-Xmx4096m -Xms4096m"
+            value: "-Xmx2048m -Xms2048m"
           - name: node.data
             value: "true"
           - name: node.ingest

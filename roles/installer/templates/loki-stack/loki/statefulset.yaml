@@ -66,11 +66,11 @@ spec:
           protocol: TCP
         resources:
           limits:
-            cpu: "{{ core_plugins.logging.operator.loki.resources.cpu | default('4')}}"
-            memory: "{{ core_plugins.logging.operator.loki.resources.memory | default('8Gi')}}"
+            cpu: "{{ core_plugins.logging.operator.loki.resources.cpu | default('2')}}"
+            memory: "{{ core_plugins.logging.operator.loki.resources.memory | default('4Gi')}}"
           requests:
-            cpu: "500m"
-            memory: "1Gi"
+            cpu: "100m"
+            memory: "256Mi"
         volumeMounts:
         - name: loki-config
           mountPath: /etc/loki/
@@ -111,6 +111,7 @@ spec:
           name: loki-recording-rules
       - hostPath:
           path: /etc/localtime
+          type: FileOrCreate
         name: timezone
   volumeClaimTemplates:
   - metadata:
@@ -121,9 +122,11 @@ spec:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: "{{ core_plugins.logging.operator.loki.persistent.size | default('20Gi') }}"
+          storage: "{{ core_plugins.logging.operator.loki.persistent.size | default('50Gi') }}"
       {% if core_plugins.logging.operator.loki.persistent.storageclass is defined %}
       storageClassName: {{ core_plugins.logging.operator.loki.persistent.storageclass }}
-      {% elif global.storageclass is defined %}}
-      storageClassName: {{ global.storageclass | default('local-path') }}
+      {% elif global.storageclass is defined %}
+      storageClassName: {{ global.storageclass }}
+      {% else %}
+      storageClassName: local-path 
       {% endif %}

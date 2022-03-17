@@ -39,5 +39,5 @@ spec:
       volumes:
       - hostPath:
           path: /etc/localtime
-          type: ""
+          type: FileOrCreate
         name: timezone

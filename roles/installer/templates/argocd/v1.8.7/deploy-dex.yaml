@@ -47,7 +47,7 @@ spec:
         - -n
         - /usr/local/bin/argocd-util
         - /shared
-        image: "{{ global.repository | default('docker.io') }}/argocd:{{ core_plugins.argocd.details.version | default('latest')}}"
+        image: "{{ global.repository | default('docker.io/kubegems') }}/argocd:{{ core_plugins.argocd.details.version | default('latest')}}"
         imagePullPolicy: IfNotPresent 
         name: copyutil
         volumeMounts:

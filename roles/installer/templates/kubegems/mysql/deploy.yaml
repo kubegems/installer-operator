@@ -57,8 +57,8 @@ spec:
             cpu: "2"
             memory: 4Gi
           requests:
-            cpu: 200m
-            memory: 1024M
+            cpu: 100m
+            memory: 256M
         volumeMounts:
         - mountPath: /var/lib/mysql
           name: mysql-persistent-storage

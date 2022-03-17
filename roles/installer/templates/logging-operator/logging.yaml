@@ -37,6 +37,7 @@ spec:
       Docker_Mode: "false"
       Mem_Buf_Limit: 256M
       Buffer_Chunk_Size: {{ core_plugins.loggiMg.operator.fluentbit.buffer | default('256k') }}
+      Buffer_Max_Size: {{ core_plugins.loggiMg.operator.fluentbit.buffer | default('256k') }}
       {% if runtime == "docker" %}
       Parser: docker
       {% else %}
@@ -86,13 +87,15 @@ spec:
           resources:
             requests:
               {% if core_plugins.logging.operator.fluentd.persistent.size is defined %}
-              storage: {{ core_plugins.logging.operator.fluentd.persistent.size | default('20Gi')}}
+              storage: {{ core_plugins.logging.operator.fluentd.persistent.size | default('10Gi') }}
               {% endif %}
           volumeMode: Filesystem
           {% if core_plugins.logging.operator.fluentd.persistent.storageclass is defined %}
           storageClassName: {{ core_plugins.logging.operator.fluentd.persistent.storageclass }}
           {% elif global.storageclass is defined %}
-          storageClassName: {{ global.storageclass | default('local-path') }}
+          storageClassName: {{ global.storageclass }}
+          {% else %}
+          storageClassName: local-path
           {% endif %}
     configReloaderImage:
       {% if global.imagepullsecret is defined %}
@@ -133,8 +136,8 @@ spec:
         cpu: {{ core_plugins.logging.operator.fluentd.resources.cpu | default('2000m') }}
         memory: {{ core_plugins.logging.operator.fluentd.resources.memory | default('4Gi') }}
       requests:
-        cpu: 200m
-        memory: 1Gi
+        cpu: 100m
+        memory: 256Mi
     scaling:
       replicas: {{ core_plugins.logging.operator.fluentd.replicas | default('2') }}
     security:

@@ -19,7 +19,6 @@
   ignore_errors: yes
   with_items:
     - prometheus/alerting.rule.yaml
-    - prometheus/logging.rule.yaml
     - alertmanager/config.yaml
 
 - name: Core Plugins | Metrics | Server
@@ -33,7 +32,6 @@
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - kubegems/service/monitor.yaml
-    - kubegems/worker/monitor.yaml
     - argocd/monitor.yaml
     - argocd/monitor-server.yaml
     - argocd/monitor-repo.yaml
@@ -170,4 +168,3 @@
 #  with_items:
 #    - gems/docs/deploy.yaml
 #    - gems/docs/service.yaml
-#

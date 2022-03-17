@@ -14,11 +14,11 @@ spec:
   ingress:
     enabled: false
   agent:
-    image: "{{ global.repository | default('docker.io/kubernetes') }}/jaeger-agent:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}"
+    image: "{{ global.repository | default('docker.io/kubegems') }}/jaeger-agent:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}"
   query:
-    image: "{{ global.repository | default('docker.io/kubernetes') }}/jaeger-query:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}"
+    image: "{{ global.repository | default('docker.io/kubegems') }}/jaeger-query:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}"
   collector:
-    image: "{{ global.repository | default('docker.io/kubernetes') }}/jaeger-collector:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}"
+    image: "{{ global.repository | default('docker.io/kubegems') }}/jaeger-collector:{{ core_plugins.jaeger.detail.version | default('v1.25.0') }}"
     options:
       collector.zipkin.host-port: "9411"
   storage:
