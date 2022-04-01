@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: gems-agent-kubectl
     spec:
       containers:
-      - image: "{{ global.reposistory |default('docker.io/kubegems') }}/gems-kubectl:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
+      - image: "{{ global.repository |default('docker.io/kubegems') }}/gems-kubectl:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
         imagePullPolicy: Always
         name: gems-agent-kubectl
         resources:
