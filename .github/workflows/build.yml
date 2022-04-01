@@ -3,7 +3,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches:
-      - 'develop'
+      - main
     # Publish semver tags as releases.
     tags: ["v*.*.*"]
     paths-ignore:
@@ -35,7 +35,7 @@ jobs:
 
     - name: Lint Ansible Playbook
       # replace "master" with any valid ref
-      uses: ansible/ansible-lint-action@master
+      uses: ansible/ansible-lint-action@main
       with:
         targets: "test.yaml"
         override-deps: |
