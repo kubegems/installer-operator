@@ -293,11 +293,12 @@ kubernetes_plugins:
   local_path:
     details:
       catalog: 存储
-      description: Rancher的开源的一个轻量级的卷管理控制器.
+      description: Rancher的开源的一个轻量级的卷管理控制器./
       version: v0.0.19
     enabled: true
     # Set kubernetes default StorageClass,if cluster don't have any storageclass.
     default_class: false
+    data_path: /data
     namespace: local-path-storage
     status:
       deployment:
