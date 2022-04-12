@@ -20,6 +20,12 @@ spec:
       - image: "{{ globle.repository | default('docker.io/kubegems')}}/charts-uploader:v2.3.0"
         imagePullPolicy: Always
         name: gems-charts-uploader
+        args:
+        - --wait
+        - --repo
+        - kubegems
+        - --server
+        - http://gems-chartmuseum:8030
       dnsPolicy: ClusterFirst
       {% if global.imagepullsecret is defined %}
       imagePullSecrets:
