@@ -105,35 +105,35 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.2.0
-        with:
-          cluster_name: kubegems-installer-test
-          node_image: kindest/node:v1.18.19
+      #- name: Create k8s Kind Cluster
+      #  uses: helm/kind-action@v1.2.0
+      #  with:
+      #    cluster_name: kubegems-installer-test
+      #    node_image: kindest/node:v1.18.19
 
       #- name: Set KubeConfig
       #  run: |
       #    echo "GITHUB_KUBECONFIG=$(cat ~/.kube/config | base64 )" >> $GITHUB_ENV
 
-      # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
-      - name: Set KubeConfig
-        run: |
-          echo 'GITHUB_KUBECONFIG<<EOF' >> $GITHUB_ENV
-          cat ~/.kube/config | base64 >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
+      ## https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+      #- name: Set KubeConfig
+      #  run: |
+      #    echo 'GITHUB_KUBECONFIG<<EOF' >> $GITHUB_ENV
+      #    cat ~/.kube/config | base64 >> $GITHUB_ENV
+      #    echo 'EOF' >> $GITHUB_ENV
 
-      - name: Deploy Installer Operator
-        run: |
-          wget -q https://dl.k8s.io/release/v1.23.0/bin/linux/amd64/kubectl
-          chmod +x ./kubectl
-          kubectl apply -f deploy/centrol.yaml
-          kubectl set image -n kubegems-installer deployment/kubegems-installer-manager manager=${{ steps.meta.outputs.tags }}
-          kubectl apply -f deploy/centrol.installer.yaml
-          sleep 180
-          echo "------- Describe Installer Operator --------"
-          kubectl describe pod -n kubegems-installer
-          echo "------- Describe Resources --------"
-          kubectl describe installer kubegems-plugins -n kubegems-installer
+      #- name: Deploy Installer Operator
+      #  run: |
+      #    wget -q https://dl.k8s.io/release/v1.23.0/bin/linux/amd64/kubectl
+      #    chmod +x ./kubectl
+      #    kubectl apply -f deploy/centrol.yaml
+      #    kubectl set image -n kubegems-installer deployment/kubegems-installer-manager manager=${{ steps.meta.outputs.tags }}
+      #    kubectl apply -f deploy/centrol.installer.yaml
+      #    sleep 180
+      #    echo "------- Describe Installer Operator --------"
+      #    kubectl describe pod -n kubegems-installer
+      #    echo "------- Describe Resources --------"
+      #    kubectl describe installer kubegems-plugins -n kubegems-installer
 
       #- name: "Create Installer Operator"
       #  uses: steebchen/kubectl@v2.0.0
