@@ -17,7 +17,7 @@ spec:
       name: gems-charts-uploader
     spec:
       containers:
-      - image: "{{ globle.repository | default('docker.io/kubegems')}}/charts-uploader:v2.3.0"
+      - image: "{{ global.repository | default('docker.io/kubegems')}}/charts-uploader:latest"
         imagePullPolicy: Always
         name: gems-charts-uploader
       dnsPolicy: ClusterFirst
