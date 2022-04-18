@@ -36,6 +36,7 @@ spec:
       - args:
         - controller
         - --enableleaderelection
+        - --repository={{ global.repository | default('docker.io/kubegems')}}
         image: "{{ global.repository | default('docker.io')}}/kubegems:{{ core_plugins.kubegems_local.details.version | default('latest')}}"
         name: manager
         ports:

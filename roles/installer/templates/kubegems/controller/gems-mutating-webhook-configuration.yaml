@@ -99,7 +99,7 @@ webhooks:
   name: mutate.label-injector.dev
   rules:
   - apiGroups:
-    - "*"
+    - ""
     apiVersions:
     - '*'
     operations:
@@ -116,4 +116,25 @@ webhooks:
     - jobs
     - cronjobs
     - persistentvolumeclaims
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: gems-webhook-service
+      namespace: gemcloud-system
+      path: /label-injector
+  failurePolicy: Ignore
+  name: mutate.label-injector-logging.dev
+  rules:
+  - apiGroups:
+    - logging.banzaicloud.io
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - flows
+    - outputs
   sideEffects: None
