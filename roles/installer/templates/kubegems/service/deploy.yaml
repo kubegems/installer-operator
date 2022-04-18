@@ -31,11 +31,12 @@ spec:
         nodeAffinity:
       containers:
       - name: gems-service
-        image: "{{ global.repository | default('docker.io/kubegems')}}/kubegems:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
+        image: "{{ global.repository | default('docker.io/kubegems')}}/kubegems:{{ core_plugins.kubegems_centrol.details.version | default('latest') }}"
         args: 
         - service
         - --jwt-cert=/certs/jwt/tls.crt
         - --jwt-key=/certs/jwt/tls.key
+        - --mysql-database={{ core_plugins.kubegems_centrol.operator.gems_service.database | default('gemcloud') }}
         imagePullPolicy: IfNotPresent
         env:
         - name: MYSQL_PASSWORD

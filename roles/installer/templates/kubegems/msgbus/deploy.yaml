@@ -33,13 +33,14 @@ spec:
         nodeAffinity:
       containers:
       - name: gems-msgbus
-        image: "{{ global.repository | default('docker.io')}}/kubegems:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
+        image: "{{ global.repository | default('docker.io')}}/kubegems:{{ core_plugins.kubegems_centrol.details.version | default('latest') }}"
         imagePullPolicy: IfNotPresent
         args:
         - msgbus
         - --jwt-cert=/certs/jwt/tls.crt
         - --jwt-key=/certs/jwt/tls.key
         - --system-listen=:8080
+        - --mysql-database={{ core_plugins.kubegems_centrol.operator.gems_service.database | default('gemcloud') }}
         env:
         - name: MYSQL_PASSWORD
           valueFrom:

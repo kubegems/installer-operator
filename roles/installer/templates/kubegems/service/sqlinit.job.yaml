@@ -36,6 +36,7 @@ spec:
         - service
         - migrate
         - --initdata=true
+        - --mysql-database={{ core_plugins.kubegems_centrol.operator.gems_service.database | default('gemcloud') }}
         env:
         - name: MYSQL_PASSWORD
           valueFrom:
