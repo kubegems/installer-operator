@@ -1,5 +1,6 @@
-- name: Core Plugins | Eventer 
+- name: Core Plugins | Eventer
   kubernetes.core.k8s:
+    apply: yes
     state: '{{ "present" if core_plugins.eventer.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:

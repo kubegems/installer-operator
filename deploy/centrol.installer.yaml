@@ -8,27 +8,27 @@ spec:
   # Container runtime, this field used to record container's logs
   # runtime: docker or containerd
   runtime: containerd
-  
+
   global:
     # Container repository on kubegems installer running.
     # default vvariable used to "docker.io/kubegems" if not set.
     # available container repositories "docker.io/kubegem" is default, other reigstry incoude <ghcr.io/kubegems> and <registry.cn-beijing.aliyuncs.com/kubegems>.
     # If you are using a private repository, you can configure a policy to replicat image locallly from any of the srouce registry listed above.
-    repository: registry.cn-beijing.aliyuncs.com/kubegems
-  
+    # repository: registry.cn-beijing.aliyuncs.com/kubegems
+    repository: docker.io/kubegems
     # Secret for container repositories.
     # imagepullsecret: kubegems
-  
+
     # Kubegems uses the built-in local-path-provisioner by defaults.
     # If you need to set a personalised storageclass for the component, please configure it in the field "<component>.operator.persisten.storageclass".
-    #storageclass: local-path
-  
+    # storageclass: local-path
+
   core_plugins:
     kubegems_local:
       details:
         catalog: KubeGems
         description: KubeGems本地组件服务,运行在Kubernetes集群内部.
-        version: develop
+        version: v1.20.0-beta.2
       namespace: gemcloud-system
       enabled: true
       operator:
@@ -44,32 +44,33 @@ spec:
           replicas: 1
       status:
         deployment:
-        - gems-agent
-        - gems-controller-manager
+          - gems-agent
+          - gems-controller-manager
         required: true
-  
+
     kubegems_dashboard:
       details:
         catalog: KubeGems
         description: KubeGems用户界面.
-        version: develop
+        version: v1.20.0-beta.2
       enabled: true
       namespace: gemcloud-system
       operator:
         replicas: 1
       status:
         deployment:
-        - gems-dashboard
-  
+          - gems-dashboard
+
     kubegems_centrol:
       details:
         catalog: KubeGems
         description: KubeGems集群控制中心组件服务.
-        version: develop
+        version: v1.20.0-beta.2
       enabled: true
       namespace: gemcloud-system
       operator:
         gems_service:
+          database: kubegems
           replicas: 1
           #debug: false
           persistent:
@@ -88,10 +89,10 @@ spec:
             #storageclass:local-path
       status:
         deployment:
-        - gems-service
-        - gems-msgbus
-        - gems-worker
-  
+          - gems-service
+          - gems-msgbus
+          - gems-worker
+
     monitoring:
       details:
         catalog: 监控&告警
@@ -100,7 +101,7 @@ spec:
       enabled: true
       namespace: gemcloud-monitoring-system
       operator:
-        prometheus: 
+        prometheus:
           enabled: true
           replicas: 1
           retention: 30d
@@ -114,7 +115,7 @@ spec:
             size: 50Gi
             # Specify stralgeclass to use, local-path was default value
             # storageclass: local-path
-  
+
           # If you need to interface to an external alertmanager service, disealed alertmanager and configured the host field
           # Tips: host only support <ipaddress>:<ports>
           #external_host: 172.16.0.1:9093
@@ -128,14 +129,14 @@ spec:
             size: 10Gi
             # Specify stralgeclass to use, local-path was default value
             # storageclass: local-path
-  
+
           # If you need to interface to an external alertmanager service, disealed alertmanager and configured the host field
           # Tips: host only support <ipaddress>:<ports>
           #external_host: 172.16.0.1:9093
       status:
         deployment:
-        - prometheus-operator
-  
+          - prometheus-operator
+
     node_exporter:
       details:
         catalog: 监控&告警
@@ -145,8 +146,8 @@ spec:
       namespace: gemcloud-monitoring-system
       status:
         daemonset:
-        - node-exporter
-  
+          - node-exporter
+
     kube_state_metrics:
       details:
         catalog: 监控&告警
@@ -156,8 +157,8 @@ spec:
       namespace: gemcloud-monitoring-system
       status:
         deployment:
-        - kube-state-metrics
-  
+          - kube-state-metrics
+
     argocd:
       details:
         catalog: GitOps
@@ -167,12 +168,12 @@ spec:
       namespace: gemcloud-workflow-system
       status:
         deployment:
-        - argocd-application-controller
-        - argocd-dex-server
-        - argocd-redis
-        - argocd-repo-server
-        - argocd-server
-  
+          - argocd-application-controller
+          - argocd-dex-server
+          - argocd-redis
+          - argocd-repo-server
+          - argocd-server
+
     argo_rollouts:
       details:
         catalog: GitOps
@@ -182,21 +183,21 @@ spec:
       namespace: gemcloud-workflow-system
       status:
         deployment:
-        - argo-rollouts
+          - argo-rollouts
         required: true
-  
+
     logging:
       details:
         catalog: 日志中心
         description: KubeGems平台管理容器日志框架,包含控制器、Loki Stack等服务.
         version: v3.15.0
-      enabled: false
+      enabled: true
       namespace: gemcloud-logging-system
       operator:
         # Upstream used by logs whitch fluentbit collect, forward to fluentdpstream uspfluentbit and forwarded to flunetd
         enable_upstream: false
         fluentbit:
-          # Set the buffer size for HTTP client when reading responses from Kubernetes API server. 
+          # Set the buffer size for HTTP client when reading responses from Kubernetes API server.
           # The value must be according to the Unit Size specification.
           #buffer: 256k
           resources:
@@ -218,7 +219,7 @@ spec:
         loki:
           enabled: true
           #image:
-          #  repository: 
+          #  repository:
           #  tag:
           #resources:
           #  cpu: "4"
@@ -231,8 +232,8 @@ spec:
           #external_host: 172.168.0.1:3100
       status:
         deployment:
-        - logging-operator
-  
+          - logging-operator
+
     eventer:
       details:
         catalog: 日志中心
@@ -242,18 +243,18 @@ spec:
       namespace: gemcloud-logging-system
       status:
         deployment:
-        - gems-eventer
-  
+          - gems-eventer
+
     istio:
       details:
         catalog: 服务网格
         description: KubeGems平台服务治理套件.
         version: v1.11.7
-      enabled: false
+      enabled: true
       namespace: istio-system
       operator:
         eastwestgateway:
-          enabled: false
+          enabled: true
         dnsproxy:
           enabled: true
         istio-cni:
@@ -269,14 +270,14 @@ spec:
           grafana_urls: "http://grafana-service.gemcloud-monitoring-system.svc.cluster.local:3000"
       status:
         deployment:
-        - istiod
-  
+          - istiod
+
     jaeger:
       details:
         catalog: 服务网格
         description: KubeGems平台服务追踪套件.
         version: v1.25.0
-      enabled: false
+      enabled: true
       namespace: observability
       operator:
         sampling:
@@ -289,14 +290,14 @@ spec:
           persistent:
             size: 100Gi
             # storageclass: local-path
-  
+
           # If you need to interface to an external ElasticSearch service, disealed ElasticSearch and configured the external_urls fielda.
           # external_urls: "http://172.16.0.1:9200"
       status:
         deployment:
-        - jaeger-collector
-        - jaeger-query
-  
+          - jaeger-collector
+          - jaeger-query
+
   kubernetes_plugins:
     local_path:
       details:
@@ -305,13 +306,14 @@ spec:
         version: v0.0.19
       enabled: true
       # Set kubernetes default StorageClass,if cluster don't have any storageclass.
+      data_path: /data
       default_class: false
       namespace: local-path-storage
       status:
         deployment:
-        - local-path-provisioner
+          - local-path-provisioner
         required: true
-  
+
     node_problem_detector:
       details:
         catalog: 日志&事件
@@ -321,8 +323,8 @@ spec:
       namespace: kube-system
       status:
         daemonset:
-        - node-problem-detector
-  
+          - node-problem-detector
+
     node_local_dns:
       details:
         catalog: 网络
@@ -334,8 +336,8 @@ spec:
       namespace: kube-system
       status:
         daemonset:
-        - node-local-dns
-  
+          - node-local-dns
+
     nvidia_device_plugin:
       details:
         catalog: 设备管理
@@ -346,7 +348,7 @@ spec:
       status:
         daemonset:
           - nvidia-device-plugin-daemonset
-  
+
     gpu_manager:
       details:
         catalog: 设备管理
@@ -356,4 +358,4 @@ spec:
       namespace: kube-system
       status:
         daemonset:
-        - tke-gpu-manager
+          - tke-gpu-manager

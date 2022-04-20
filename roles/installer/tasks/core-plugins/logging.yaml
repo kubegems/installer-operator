@@ -8,7 +8,7 @@
     - logging-operator/operator/crds/clusterflows.yaml
     - logging-operator/operator/crds/flows.yaml
     - logging-operator/operator/crds/outputs.yaml
-    - logging-operator/operator/crds/clusteroutputs.yaml 
+    - logging-operator/operator/crds/clusteroutputs.yaml
 
 - name: Core Plugins | Logging Operator Service
   kubernetes.core.k8s:
@@ -37,15 +37,15 @@
     definition: "{{ lookup('file', item) | from_yaml }}"
   with_items:
     - loki-stack/recording_rules.yaml
-
-- name: Core Plugins | Loki Stack
-  kubernetes.core.k8s:
-    state: '{{ "present" if core_plugins.logging.enabled and core_plugins.logging.operator.loki.enabled else "absent" }}'
-    definition: "{{ lookup('template', item) | from_yaml }}"
-  with_items:
-    - loki-stack/redis/statefulset.yaml
-    - loki-stack/redis/svc.yaml
-    - loki-stack/redis/configmap.yaml
-    - loki-stack/loki/configmap.yaml
-    - loki-stack/loki/statefulset.yaml
-    - loki-stack/loki/svc.yaml
+#
+# - name: Core Plugins | Loki Stack
+#   kubernetes.core.k8s:
+#     state: '{{ "present" if core_plugins.logging.enabled and core_plugins.logging.operator.loki.enabled else "absent" }}'
+#     definition: "{{ lookup('template', item) | from_yaml }}"
+#   with_items:
+#     - loki-stack/redis/statefulset.yaml
+#     - loki-stack/redis/svc.yaml
+#     - loki-stack/redis/configmap.yaml
+#     - loki-stack/loki/configmap.yaml
+#     - loki-stack/loki/statefulset.yaml
+#     - loki-stack/loki/svc.yaml

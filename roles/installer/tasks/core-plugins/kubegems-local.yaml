@@ -1,7 +1,8 @@
 ---
-- name: Core Plugins | KubeGems Agent 
+- name: Core Plugins | KubeGems Agent
   kubernetes.core.k8s:
     state: present
+    apply: yes
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - kubegems/agent/issuer.yaml
@@ -16,26 +17,30 @@
 - name: Core Plugins | KubeGems Controller | CRDs
   kubernetes.core.k8s:
     state: present
+    apply: yes
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_fileglob:
     - "templates/kubegems/controller/crds/*.yaml"
 
-- name: Core Plugins | KubeGems Controller 
+- name: Core Plugins | KubeGems Controller
   kubernetes.core.k8s:
     state: present
+    apply: yes
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_fileglob:
     - "templates/kubegems/controller/*.yaml"
 
 - name: Core Plugins | Basic Gateway | CRDs
   kubernetes.core.k8s:
+    apply: yes
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - gateway/crd/crd.yaml
 
-- name: Core Plugins | Basic Gateway 
+- name: Core Plugins | Basic Gateway
   kubernetes.core.k8s:
+    apply: yes
     state: present
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -55,6 +60,7 @@
 - name: Core Plugins | Argo Rollouts | CRDs
   kubernetes.core.k8s:
     state: present
+    apply: yes
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
     - argo-rollouts/v1.1.0/crds/analysisruns.yaml
@@ -63,8 +69,9 @@
     - argo-rollouts/v1.1.0/crds/experiments.yaml
     - argo-rollouts/v1.1.0/crds/rollouts.yaml
 
-- name: Core Plugins | Argo Rollouts 
+- name: Core Plugins | Argo Rollouts
   kubernetes.core.k8s:
+    apply: yes
     state: '{{ "present" if core_plugins.argo_rollouts.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
@@ -80,6 +87,7 @@
 
 - name: Core Plugins | Argo Rollouts AnalysisTemplate
   kubernetes.core.k8s:
+    apply: yes
     state: '{{ "present" if core_plugins.argo_rollouts.enabled else "absent" }}'
     definition: "{{ lookup('file', item) | from_yaml }}"
   ignore_errors: yes

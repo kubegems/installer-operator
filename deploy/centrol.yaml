@@ -291,7 +291,7 @@ spec:
         # kuebgems doc service, same as https://kubegems.io
         - name: ENABLED_KUBEGEMS_DOCS
           value: "off"
-        # installer operator running mode, default is "worker".
+        # installer operator running mode, default is "local".
         # centrol willb be install kubegems-[service,msgbus,worker] and it's dependencies service.
         - name: RUNNING_MODE 
           value: "centrol"
@@ -301,7 +301,7 @@ spec:
         # You can findout more informations at roles/tasks/main.yml.
         - name: LOCATION
           value: "inside"
-        image: kubegems/installer-operator:v2.3.0
+        image: docker.io/kubegems/installer-operator:v1.20.0-beta.2-patch1
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3

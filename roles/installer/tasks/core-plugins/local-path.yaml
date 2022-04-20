@@ -1,5 +1,6 @@
 - name: Kubernetes Plugins | Local Path Provisioner
   kubernetes.core.k8s:
+    apply: yes
     state: '{{ "present" if kubernetes_plugins.local_path.enabled else "absent" }}'
     definition: "{{ lookup('template', item) | from_yaml }}"
   with_items:
