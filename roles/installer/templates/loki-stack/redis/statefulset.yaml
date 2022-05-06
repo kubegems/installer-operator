@@ -1,6 +1,6 @@
 #jinja2:lstrip_blocks: True
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app.kubernetes.io/name: loki-redis
