@@ -13,7 +13,7 @@ data:
       rules:
       - record: logging_level_error
         expr: sum by (namespace) (count_over_time({stream=~"stdout|stderr"} |~ `error` [1m]))
-      - record:eventer
+      - record: eventer
         expr: sum by (type,metadata_namespace) (count_over_time({container="gems-eventer"}|json [1m]))
       - record: eventer_component
         expr: sum by (source_component,metadata_namespace) (count_over_time({container="gems-eventer"}|json [1m]))
