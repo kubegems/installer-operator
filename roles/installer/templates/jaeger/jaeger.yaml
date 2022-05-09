@@ -22,6 +22,8 @@ spec:
     options:
       collector.zipkin.host-port: "9411"
   storage:
+    dependencies:
+      enabled: false
     type: elasticsearch
     options:
       es:
