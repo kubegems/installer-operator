@@ -8,6 +8,7 @@ metadata:
   namespace: gemcloud-logging-system
 spec:
   replicas: 1
+  serviceName:  loki-redis
   selector:
     matchLabels:
       app.kubernetes.io/name: loki-redis
