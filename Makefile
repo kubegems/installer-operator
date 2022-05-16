@@ -29,6 +29,8 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
 IMAGE_TAG_BASE ?= docker.io/kubegems/installer-operator
+ALI_IMAGE_TAG_BASE ?= registry.cn-beijing.aliyuncs.com/kubegems/installer-operator
+GH_IMAGE_TAG_BASE ?= ghcr.io/kubegems/installer-operator
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
@@ -36,6 +38,8 @@ BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(VERSION)
 
 # Image URL to use all building/pushing image targets
 IMG ?= $(IMAGE_TAG_BASE):$(VERSION)
+ALI_IMG ?= $(ALI_IMAGE_TAG_BASE):$(VERSION)
+GH_IMG ?= $(GH_IMAGE_TAG_BASE):$(VERSION)
 
 all: docker-build
 
@@ -62,9 +66,13 @@ run: ansible-operator ## Run against the configured Kubernetes cluster in ~/.kub
 
 docker-build: ## Build docker image with the manager.
 	docker build -t ${IMG} .
+	docker tag ${IMG} ${ALI_IMG}
+	docker tag ${IMG} ${GH_IMG}
 
 docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
+	docker push ${ALI_IMG}
+	docker push ${GH_IMG}
 
 ##@ Deployment
 

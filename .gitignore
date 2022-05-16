@@ -7,6 +7,7 @@
 *.dylib
 bin
 .DS_Store
+.vscode
 
 # editor and IDE paraphernalia
 .idea
