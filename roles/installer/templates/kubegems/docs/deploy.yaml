@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - image: "docker.io/kubegems/gems-docs:{{ core_plugins.gems_worker.details.version }}"
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: gems-docs
         ports:
         - containerPort: 8080

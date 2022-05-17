@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - image: "{{ global.repository |default('docker.io/kubegems') }}/gems-kubectl:{{ core_plugins.kubegems_local.details.version | default('latest') }}"
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: gems-agent-kubectl
         resources:
           limits:

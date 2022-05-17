@@ -28,7 +28,7 @@ spec:
         - containerPort: 8686
           name: cr-metrics
         args: ["start"]
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         resources:
           limits:
             cpu: 500m

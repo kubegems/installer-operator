@@ -200,23 +200,23 @@ spec:
           expr: histogram_quantile(0.95, sum(irate(envoy_http_outbound_0_0_0_0_8443_downstream_rq_time_bucket[5m]))by(namespace, pod, le)) / 1000
 
         # observability logging
-        - record: gems_logging_level_error
-          expr: |
-            sum(logging_level_error)by(namespace)
-            * on(namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
-            kube_namespace_labels
-        - record: gems_eventer
-          expr: |
-            sum(eventer)by(type,metadata_namespace)
-            * on(metadata_namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
-            kube_namespace_labels
-        - record: gems_eventer_component
-          expr: |
-            sum(eventer_component)by(source_component,metadata_namespace)
-            * on(metadata_namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
-            kube_namespace_labels
-        - record: gems_eventer_kind
-          expr: |
-            sum(eventer_kind)by(involvedObject_kind,metadata_namespace)
-            * on(metadata_namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
-            kube_namespace_labels
+        #- record: gems_logging_level_error
+        #  expr: |
+        #    sum(logging_level_error)by(namespace)
+        #    * on(namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
+        #    kube_namespace_labels
+        #- record: gems_eventer
+        #  expr: |
+        #    sum(eventer)by(type,metadata_namespace)
+        #    * on(metadata_namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
+        #    kube_namespace_labels
+        #- record: gems_eventer_component
+        #  expr: |
+        #    sum(eventer_component)by(source_component,metadata_namespace)
+        #    * on(metadata_namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
+        #    kube_namespace_labels
+        #- record: gems_eventer_kind
+        #  expr: |
+        #    sum(eventer_kind)by(involvedObject_kind,metadata_namespace)
+        #    * on(metadata_namespace) group_left(label_gems_kubegems_io_environment, label_gems_kubegems_io_project, label_gems_kubegems_io_tenant) 
+        #    kube_namespace_labels
