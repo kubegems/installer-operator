@@ -34,7 +34,7 @@ spec:
           value: --container-runtime-endpoint=/var/run/containerd/containerd.sock
         {% endif %}
         image: "{{ global.repository | default('docker.io/kubegems')}}/gpu-manager:{{ kubernetes_plugins.gpu_manager.details.version | default('v1.1.2')}}"
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: gpu-manager
         ports:
         - containerPort: 5678

@@ -48,7 +48,7 @@ spec:
         resources:
           limits: {}
           requests: {}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true
         env:
