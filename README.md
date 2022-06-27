@@ -2,6 +2,9 @@
 <img src="https://github.com/kubegems/.github/blob/master/static/image/kubegem-logo.jpg?raw=true" width="30%" height="30%">
 </p>
 
+> **:warning:**
+> **KubeGems installer operator was migrated to kubegems after v1.21+ , this repository was archived now !**
+
 Installer Operator powered by [Ansible-Operator(OperatorSDK)](https://sdk.operatorframework.io/docs/overview/), it contains all the manifests needed to deploy kubegems.
 
 ## Quick start
